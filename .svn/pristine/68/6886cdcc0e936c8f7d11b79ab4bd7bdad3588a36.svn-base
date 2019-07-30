@@ -1,0 +1,40 @@
+package com.hmn.ym.manager.service.system;
+
+import com.github.pagehelper.Page;
+import com.github.pagehelper.PageHelper;
+import com.hmn.ym.dao.entities.po.system.User;
+import com.hmn.ym.dao.entities.vo.system.UserVo;
+import com.hmn.ym.dao.mapper.system.UserMapper;
+import com.hmn.ym.manager.common.TablePage;
+import com.hmn.ym.manager.service.BaseServiceImpl;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import tk.mybatis.mapper.entity.Example;
+
+@Service
+public class UserService extends BaseServiceImpl<User, UserMapper> {
+    @Autowired
+    private UserMapper userMapper;
+
+    public TablePage<User> page(UserVo vo) {
+        Example example = new Example(User.class);
+        Example.Criteria ca = example.createCriteria();
+        if (StringUtils.isNotBlank(vo.getName())) {
+            ca.andEqualTo("name", vo.getName());
+        }
+        PageHelper.startPage(vo.getPageNum(), vo.getNumPerPage());
+        Page<User> page = (Page<User>) userMapper.selectByExample(example);
+
+        TablePage<User> result = new TablePage<User>();
+        result.setData(page.getResult());
+        result.setCount((int) page.getTotal());
+        return result;
+    }
+
+    public User getByUserName(String userName) {
+        Example example = new Example(User.class);
+        example.createCriteria().andEqualTo("name", userName);
+        return userMapper.selectOneByExample(example);
+    }
+}

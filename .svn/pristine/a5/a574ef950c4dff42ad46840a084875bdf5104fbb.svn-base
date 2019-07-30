@@ -1,0 +1,60 @@
+var table;
+$(document).ready(function () {
+    table = $('#dataTables').DataTable({
+        "responsive": true,
+        "paginate": true,
+        "processing": true,
+        "serverSide": true,
+        "searching": false,
+        "ordering": false,
+        "pagingType": 'full_numbers',
+        "ajax": {
+            "url": ctx + '/api/questionnaire/list',
+            "type": 'post',
+            "data": function (data) {
+
+            }
+        },
+        "columnDefs": [{
+            "targets": [4],
+            "data": "download_link",
+            "render": function (data) {
+                var html = '<a class=" btn btn-sm blue btn-outline filter-cancel" href="javascript:questionnaireSubjectFun(' + data.id + ')">管理题目</a>';
+                html += '<a class=" btn btn-sm blue btn-outline filter-cancel" href="javascript:questionnaireContentFun(' + data.id + ')">管理自定义内容</a>';
+                html += '<a class=" btn btn-sm blue btn-outline filter-cancel" href="javascript:sendSubjectFun(' + data.id + ')">问卷预览</a>';
+                return html;
+            }
+        }],
+        "columns": [
+            {"data": "name"},
+            {"data": "code"},
+            {"data": "num"},
+            {
+                "data": "createTime", "render": function (data) {
+                    return (new Date(data)).Format("yyyy-MM-dd hh:mm:ss");
+                }
+            },
+            {"data": null}
+        ],
+        "language": {
+            "url": ctx + '/static/plugins/datatables/language-chinese.json'
+        }
+    });
+});
+
+function search() {
+    table.ajax.reload();
+}
+
+function questionnaireSubjectFun(id) {
+    window.location.href = ctx + "/questionnaire/list_subject?questionnaireId=" + id;
+}
+
+function questionnaireContentFun(id) {
+    window.location.href = ctx + "/questionnaireContent/list?questionnaireId=" + id;
+}
+
+function sendSubjectFun(id) {
+    window.open(ctx + "/front/questionnaire?questionnaireId=" + id);
+}
+

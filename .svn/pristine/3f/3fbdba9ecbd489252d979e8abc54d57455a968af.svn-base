@@ -1,0 +1,46 @@
+package com.hmn.ym.dao.entities.po.questionnaire;
+
+import java.io.Serializable;
+import java.util.Date;
+import javax.persistence.*;
+
+import lombok.Data;
+
+@Table(name = "t_questionnaire")
+@Data
+public class Questionnaire implements Serializable {
+    /**
+     * 主键ID
+     */
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer id;
+
+    /**
+     * 问卷标题
+     */
+    private String name;
+
+    /**
+     * 卡片ID,每份问卷的唯一编码,随机 32位数字+小写字母组合
+     */
+    private String code;
+
+    /**
+     * 问卷编号,4位数字0001-9999
+     */
+    private String num;
+
+    /**
+     * 创建时间
+     */
+    @Column(name = "create_time")
+    private Date createTime;
+
+    /**
+     * 更新时间
+     */
+    @Column(name = "update_time")
+    private Date updateTime;
+
+    private static final long serialVersionUID = 1L;
+}

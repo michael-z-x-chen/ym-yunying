@@ -1,0 +1,77 @@
+var table;
+$(document).ready(function () {
+    table = $('#dataTables').DataTable({
+        "responsive": true,
+        "paginate": true,
+        "processing": true,
+        "serverSide": true,
+        "searching": false,
+        "ordering": false,
+        "pagingType": 'full_numbers',
+        "ajax": {
+            "url": ctx + '/api/zk/list',
+            "type": 'post',
+            "data": function (data) {
+                var projectId = $("#eq_projectId").val();
+                data.projectId = projectId;
+            }
+        },
+        "columnDefs": [{
+            "targets": [3],
+            "data": "download_link",
+            "render": function (data) {
+                var html = '<a class="' + editClass + edit + '" href="javascript:editFun(\'' + data.id + '\',\'' + data.hosts + '\',\'' + data.remark + '\',\'' + data.projectId + '\')"><i class="fa fa-edit"></i>编辑</a>\n';
+                html += '<a class="' + delClass + deletes + '" href="javascript:deleteFun(' + data.id + ')"><i class="fa fa-remove"></i>删除</a>';
+                return html;
+            }
+        }],
+        "columns": [
+            {"data": "hosts"},
+            {"data": "remark"},
+            {"data": "projectName"},
+            {"data": null}
+        ],
+        "language": {
+            "url": ctx + '/static/plugins/datatables/language-chinese.json'
+        }
+    });
+});
+
+function search() {
+    table.ajax.reload();
+}
+
+function deleteFun(id) {
+    commonFn.deleteData(id, ctx + "/api/zk/delete", table);
+}
+
+var $form = $('#addForm');
+
+function editFun(id, hosts, remark, projectId) {
+    $form.validate().resetForm();
+    commonFn.removeClass();
+    $("#id").val(id);
+    $("#hosts").val(hosts);
+    $("#remark").val(remark);
+    $("#projectId").val(projectId);
+    $("#addModal").modal('show');
+    $("#addLabel").html("编辑环境");
+}
+
+function addFun() {
+    $form.validate().resetForm();
+    commonFn.removeClass();
+    commonFn.emptyVal();
+    $("#addLabel").html("添加ZK地址");
+    $("#saveBtn").prop("disabled", false);
+}
+
+$(document).ready(function () {
+    commonFn.formSubmit($form, "saveBtn", "addModal", "", function ($form) {
+        addFormRule($form)
+    });
+});
+
+function addFormRule($form) {
+    $form.find("input[name='hosts']").rules("add", {required: true, messages: {required: "请输入ZK地址"}});
+}

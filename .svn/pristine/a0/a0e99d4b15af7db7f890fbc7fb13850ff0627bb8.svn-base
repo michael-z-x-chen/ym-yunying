@@ -1,0 +1,33 @@
+package com.hmn.ym.common.model;
+
+import com.hmn.ym.common.enums.ServerCode;
+import lombok.Data;
+
+/**
+ * 公共响应
+ *
+ * @author xufz
+ */
+@Data
+public class BaseResp extends BaseModel {
+    private static final long serialVersionUID = 1L;
+    /**
+     * 状态码
+     */
+    private int status;
+    /**
+     * 描述
+     */
+    private String message;
+    /**
+     * 返回实体
+     */
+    private Object data;
+
+    public boolean isSuccess() {
+        if (this.status == ServerCode.SUCCESS.code()) {
+            return Boolean.TRUE;
+        }
+        return Boolean.FALSE;
+    }
+}

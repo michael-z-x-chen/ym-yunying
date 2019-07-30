@@ -1,0 +1,95 @@
+package com.hmn.ym.dao.entities.po.question;
+
+import java.io.Serializable;
+import java.util.Date;
+import javax.persistence.*;
+
+import lombok.Data;
+
+@Table(name = "t_question")
+@Data
+public class Question implements Serializable {
+    /**
+     * 主键ID
+     */
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer id;
+
+    /**
+     * 题目编号
+     */
+    private String code;
+
+    /**
+     * 题目名称
+     */
+    private String name;
+
+    /**
+     * 状态 1:隐藏  2: 显示
+     */
+    private Integer status;
+
+    /**
+     * 题目类型（1.单选题、2.多选题、3.问答题、4.区域题型、5.备注题型、6.下拉列表）
+     */
+    private Integer type;
+
+    /**
+     * 是否已删除(0：未删除 1 ：已删除）
+     */
+    private Integer deleted;
+
+    /**
+     * 备注
+     */
+    private String remark;
+
+    /**
+     * 排序
+     */
+    private Integer sort;
+
+    /**
+     * 是否必填（0，不必填，1：必填）
+     */
+    private Integer required;
+
+    /**
+     * 最小值(填空题时)
+     */
+    @Column(name = "range_min")
+    private Integer rangeMin;
+
+    /**
+     * 最大值(填空题时)
+     */
+    @Column(name = "range_max")
+    private Integer rangeMax;
+
+    /**
+     * 创建人Id
+     */
+    @Column(name = "create_id")
+    private Integer createId;
+
+    /**
+     * 创建时间
+     */
+    @Column(name = "create_time")
+    private Date createTime;
+
+    /**
+     * 更新人Id
+     */
+    @Column(name = "update_id")
+    private Integer updateId;
+
+    /**
+     * 更新时间
+     */
+    @Column(name = "update_time")
+    private Date updateTime;
+
+    private static final long serialVersionUID = 1L;
+}

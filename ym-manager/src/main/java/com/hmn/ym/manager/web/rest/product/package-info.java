@@ -1,0 +1,1 @@
+package com.hmn.ym.manager.web.rest.product;

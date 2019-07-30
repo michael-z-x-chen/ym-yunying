@@ -1,0 +1,189 @@
+var table;
+$(document).ready(function () {
+    table = $('#dataTables').DataTable({
+        "responsive": true,
+        "paginate": true,
+        "processing": true,
+        "serverSide": true,
+        "searching": false,
+        "ordering": false,
+        "pagingType": 'full_numbers',
+        "ajax": {
+            "url": ctx + '/api/organization/list',
+            "type": 'post',
+            "data": function (data) {
+                var questionnaireId = $("#eq_questionnaireId").val();
+                data.questionnaireId = questionnaireId;
+            }
+        },
+        "columnDefs": [{
+            "targets": [7],
+            "data": "download_link",
+            "render": function (data) {
+                var html = '<a class=" btn btn-sm blue btn-outline filter-cancel" href="javascript:updateFun(' + data.id + ')">修改</a>';
+                html += '<a class=" btn btn-sm blue btn-outline filter-cancel" href="javascript:deleteFun(' + data.id + ')">删除</a>';
+                html += '<a class=" btn btn-sm blue btn-outline filter-cancel" href="javascript:statusFun(' + data.id + ',' + data.status + ')">' + getStatusHtml(data.status) + '</a>';
+                html += '<a class=" btn btn-sm blue btn-outline filter-cancel" href="javascript:showUserFun(' + data.id + ')">机构用户</a>';
+
+                return html;
+            }
+        }],
+        "columns": [
+            {"data": "num"},
+            {"data": "name"},
+            {"data": "sentinelUnit"},
+            {"data": "sentinelLevel"},
+            {"data": "monitorPeopleType"},
+            {"data": "address"},
+            {
+                "data": "status", "render": function (data) {
+                    return data == 1 ? '禁用' : '启用';
+                }
+            },
+            {"data": null}
+        ],
+        "language": {
+            "url": ctx + '/static/plugins/datatables/language-chinese.json'
+        }
+    });
+});
+
+function search() {
+    table.ajax.reload();
+}
+
+function showUserFun(id) {
+    window.location.href = ctx + "/user/list?organizationId=" + id;
+}
+
+function deleteFun(id) {
+    commonFn.deleteData(id, ctx + "/api/organization/delete", table);
+}
+
+function getStatusHtml(status) {
+    var statusHtml = '禁用';
+    if (status == 1) {
+        statusHtml = '启用';
+    }
+    return statusHtml;
+}
+
+function statusFun(id, status) {
+    swal({
+            title: "",
+            text: "确认" + getStatusHtml(status) + "该机构？",
+            type: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#458ae6",
+            confirmButtonText: "确定",
+            cancelButtonText: "取消",
+            closeOnConfirm: false,
+            closeOnCancel: true
+        },
+        function (isConfirm) {
+            if (isConfirm) {
+                if (status == 1) {
+                    status = 0
+                } else {
+                    status = 1
+                }
+                $.ajax({
+                    type: 'POST',
+                    url: ctx + "/api/organization/enabled",
+                    data: {
+                        id: id,
+                        status: status,
+                    },
+                    success: function (result) {
+                        if (result.code == "200") {
+                            swal({
+                                title: "",
+                                text: getStatusHtml(status) + "成功!",
+                                type: "success",
+                                closeOnConfirm: true
+                            }, function () {
+                                table.ajax.reload();
+                            });
+                        } else {
+                            swal({title: "", text: result.msg, type: "error", closeOnConfirm: true});
+                        }
+                    }
+                });
+            }
+        });
+}
+
+function updateFun(id) {
+    $form.validate().resetForm();
+    commonFn.removeClass();
+    $("#id").val(id);
+    $.getJSON(ctx + "/api/organization/getById", {id: id}, function (data) {
+        $("#num").val(data.num);
+        $("#name").val(data.name);
+        $("#sentinelUnit").val(data.sentinelUnit);
+        $("#sentinelLevel").val(data.sentinelLevel);
+        $("#monitorPeopleType").val(data.monitorPeopleType);
+        $("#areaNum").val(data.areaNum);
+        $("#remark").val(data.remark);
+        $("#provinceName").val(data.provinceName);
+        $("#provinceName").change();
+        var t1 = "";
+        t1 = setInterval(function () {
+            $("#cityName").val(data.cityName);
+            $("#cityName").change();
+        }, 3000);
+
+        var t2 = "";
+        t2 = setInterval(function () {
+            $("#areaName").val(data.areaName);
+        }, 3000);
+
+        var t3 = "";
+        t3 = setInterval(function () {
+            clearInterval(t1);
+            clearInterval(t2);
+        }, 5000);
+    });
+    $("#addModal").modal('show');
+    $("#addLabel").html("编辑机构");
+}
+
+var $form = $('#addForm');
+
+function addFun() {
+    $form.validate().resetForm();
+    commonFn.removeClass();
+    $("#id").val("");
+    $("#num").val("");
+    $("#name").val("");
+    $("#sentinelUnit").val("");
+    $("#sentinelLevel").val("");
+    $("#monitorPeopleType").val("");
+    $("#areaId").val("");
+    $("#areaNum").val("");
+    $("#remark").val("");
+    $("#addLabel").html("添加机构");
+    $("#saveBtn").prop("disabled", false);
+}
+
+$(document).ready(function () {
+    commonFn.formSubmit($form, "saveBtn", "addModal", "", function ($form) {
+        addFormRule($form)
+    });
+});
+
+function addFormRule($form) {
+    $form.find("input[name='name']").rules("add", {required: true, messages: {required: "请输入机构名称"}});
+    $form.find("input[name='num']").rules("add", {digits: true, messages: {required: "请输入合法机构编号"}});
+    $form.find("select[name='provinceName']").rules("add", {required: true, messages: {required: "请选择省份"}});
+    $form.find("select[name='cityName']").rules("add", {required: true, messages: {required: "请选择城市"}});
+    $form.find("select[name='areaName']").rules("add", {required: true, messages: {required: "请选择地区"}});
+}
+
+$(function () {
+    'use strict';
+    $('#distpicker').distpicker();
+});
+
+
+

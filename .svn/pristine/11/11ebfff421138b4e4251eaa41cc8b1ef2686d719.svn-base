@@ -1,0 +1,39 @@
+var table;
+$(document).ready(function () {
+    table = $('#dataTables').DataTable({
+        "responsive": true,
+        "paginate": true,
+        "processing": true,
+        "serverSide": true,
+        "searching": false,
+        "ordering": false,
+        "pagingType": 'full_numbers',
+        "ajax": {
+            "url": ctx + '/api/answer/workStatistics',
+            "type": 'post',
+            "data": function (data) {
+
+            }
+        },
+        "columns": [
+            {"data": "organizationName"},
+            {"data": "realName"},
+            {"data": "totalNum"},
+            {"data": "finishTotalNum"},
+        ],
+        "language": {
+            "url": ctx + '/static/plugins/datatables/language-chinese.json'
+        }
+    });
+});
+
+function search() {
+    table.ajax.reload();
+}
+
+
+
+
+
+
+

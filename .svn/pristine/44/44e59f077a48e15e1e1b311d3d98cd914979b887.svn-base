@@ -1,0 +1,178 @@
+package com.hmn.ym.manager.service.system.impl;
+
+import com.github.pagehelper.Page;
+import com.github.pagehelper.PageHelper;
+import com.google.common.collect.Lists;
+import com.hmn.ym.dao.entities.po.system.Dict;
+import com.hmn.ym.dao.entities.po.system.Menu;
+import com.hmn.ym.dao.entities.po.system.Permission;
+import com.hmn.ym.dao.entities.po.system.RolePermission;
+import com.hmn.ym.dao.entities.vo.DataTablePage;
+import com.hmn.ym.dao.entities.vo.system.PermissionPageVo;
+import com.hmn.ym.dao.entities.vo.system.PermissionVo;
+import com.hmn.ym.dao.mapper.system.DictMapper;
+import com.hmn.ym.dao.mapper.system.MenuMapper;
+import com.hmn.ym.dao.mapper.system.PermissionMapper;
+import com.hmn.ym.dao.mapper.system.RolePermissionMapper;
+import com.hmn.ym.manager.common.shiro.ShiroUtils;
+import com.hmn.ym.manager.service.BaseServiceImpl;
+import com.hmn.ym.manager.service.system.IPermissionService;
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import tk.mybatis.mapper.entity.Example;
+
+import java.util.Arrays;
+import java.util.Date;
+import java.util.List;
+import java.util.stream.Collectors;
+
+@Service
+public class PermissionServiceImpl extends BaseServiceImpl<Permission, PermissionMapper> implements IPermissionService {
+    @Autowired
+    private PermissionMapper permissionMapper;
+    @Autowired
+    private RolePermissionMapper rolePermissionMapper;
+    @Autowired
+    private MenuMapper menuMapper;
+
+    @Override
+    public DataTablePage<PermissionVo> page(PermissionPageVo vo) {
+        List<Integer> menuIds = this.getMenuIdByParentId(vo);
+        if (CollectionUtils.isEmpty(menuIds)) {
+            return new DataTablePage<PermissionVo>(vo.getDraw(), 0, Lists.newArrayList());
+        }
+        Example example = new Example(Permission.class);
+        example.createCriteria().andIn("menuId", menuIds);
+
+        PageHelper.startPage(vo.getStart(), vo.getLength());
+        Page<Permission> page = (Page<Permission>) permissionMapper.selectByExample(example);
+        List<PermissionVo> list = Lists.newArrayList();
+        for (Permission per : page.getResult()) {
+            PermissionVo perVo = new PermissionVo();
+            BeanUtils.copyProperties(per, perVo);
+
+            example = new Example(Menu.class);
+            example.createCriteria().andEqualTo("id", per.getMenuId());
+            Menu menu = menuMapper.selectOneByExample(example);
+            if (menu != null) {
+                perVo.setMenuName(menu.getName());
+            }
+            list.add(perVo);
+        }
+        return new DataTablePage<PermissionVo>(vo.getDraw(), (int) page.getTotal(), list);
+    }
+
+    @Override
+    public List<PermissionVo> listByMenuId(String menuIds, Integer roleId) {
+        if (StringUtils.isBlank(menuIds)) {
+            return Lists.newArrayList();
+        }
+        Example example = new Example(Permission.class);
+        if (StringUtils.isNotBlank(menuIds)) {
+            example.createCriteria().andIn("menuId", Arrays.asList(StringUtils.split(menuIds, ",")));
+        }
+        List<Permission> list = permissionMapper.selectByExample(example);
+        List<PermissionVo> result = Lists.newArrayList();
+        for (Permission per : list) {
+            PermissionVo perVo = new PermissionVo();
+            BeanUtils.copyProperties(per, perVo);
+
+            example = new Example(RolePermission.class);
+            example.createCriteria().andEqualTo("roleId", roleId).andEqualTo("permissionId", per.getId());
+            RolePermission rolePermission = rolePermissionMapper.selectOneByExample(example);
+            if (rolePermission != null) {
+                perVo.setHasPermission(true);
+            }
+            example = new Example(Menu.class);
+            example.createCriteria().andEqualTo("id", per.getMenuId());
+            Menu menu = menuMapper.selectOneByExample(example);
+            if (menu != null) {
+                perVo.setMenuName(menu.getName());
+            }
+            result.add(perVo);
+        }
+        return result;
+    }
+
+    @Transactional
+    @Override
+    public void save(PermissionVo vo) {
+        if (vo.getId() != null) {
+            Permission exit = permissionMapper.selectByPrimaryKey(vo.getId());
+            if (!exit.getCode().equals(vo.getCode())) {
+                this.exit(vo.getCode());
+            }
+            Permission per = new Permission();
+            BeanUtils.copyProperties(vo, per);
+            per.setUpdateId(ShiroUtils.getUserId());
+            per.setUpdateTime(new Date());
+
+            permissionMapper.updateByPrimaryKeySelective(per);
+        } else {
+            this.exit(vo.getCode());
+
+            Permission per = new Permission();
+            BeanUtils.copyProperties(vo, per);
+            per.setCreateId(ShiroUtils.getUserId());
+            per.setCreateTime(new Date());
+            per.setUpdateId(ShiroUtils.getUserId());
+            per.setUpdateTime(new Date());
+
+            permissionMapper.insertSelective(per);
+        }
+    }
+
+    @Transactional
+    @Override
+    public void delete(Integer id) {
+        //按钮
+        permissionMapper.deleteByPrimaryKey(id);
+
+        //角色按钮
+        Example example = new Example(RolePermission.class);
+        example.createCriteria().andEqualTo("permissionId", id);
+        rolePermissionMapper.deleteByExample(example);
+    }
+
+    private void exit(String code) {
+        Example example = new Example(Permission.class);
+        example.createCriteria().andEqualTo("code", code);
+        Permission permission = permissionMapper.selectOneByExample(example);
+        if (permission != null) {
+            throw new RuntimeException("该按钮编码已经存在.");
+        }
+    }
+
+    private List<Integer> getMenuIdByParentId(PermissionPageVo vo) {
+        if (vo.getMenuId() == 1) {
+            Example example = new Example(Menu.class);
+            example.createCriteria().andEqualTo("projectId", vo.getProjectId());
+            List<Menu> list = menuMapper.selectByExample(example);
+            return list.stream().map(Menu::getId).collect(Collectors.toList());
+        }
+        List<Menu> menuList = Lists.newArrayList();
+        this.getMenuByParentId(menuList, vo.getMenuId(), vo.getProjectId());
+
+        Example example = new Example(Menu.class);
+        example.createCriteria().andEqualTo("id", vo.getMenuId());
+        menuList.add(menuMapper.selectOneByExample(example));
+
+        return menuList.stream().map(Menu::getId).collect(Collectors.toList());
+    }
+
+    private void getMenuByParentId(List<Menu> menuList, Integer parentId, Integer projectId) {
+        Example example = new Example(Menu.class);
+        example.createCriteria().andEqualTo("parentId", parentId).andEqualTo("projectId", projectId);
+        List<Menu> list = menuMapper.selectByExample(example);
+        if (CollectionUtils.isNotEmpty(list)) {
+            menuList.addAll(list);
+            for (Menu menu : list) {
+                this.getMenuByParentId(menuList, menu.getId(), projectId);
+            }
+        }
+    }
+}

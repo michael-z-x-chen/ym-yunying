@@ -1,0 +1,103 @@
+var table;
+$(document).ready(function () {
+    table = $('#dataTables').DataTable({
+        "responsive": true,
+        "paginate": true,
+        "processing": true,
+        "serverSide": true,
+        "searching": false,
+        "ordering": false,
+        "pagingType": 'full_numbers',
+        "ajax": {
+            "url": ctx + '/api/user/list',
+            "type": 'post',
+            "data": function (data) {
+                var organizationId = $("#eq_organizationId").val();
+                data.organizationId = organizationId;
+            }
+        },
+        "columnDefs": [{
+            "targets": [5],
+            "data": "download_link",
+            "render": function (data) {
+                var html = '<a class=" btn btn-sm blue btn-outline filter-cancel" href="javascript:updateFun(' + data.id + ')">修改</a>';
+                html += '<a class=" btn btn-sm blue btn-outline filter-cancel" href="javascript:deleteFun(' + data.id + ')">删除</a>';
+
+                return html;
+            }
+        }],
+        "columns": [
+            {"data": "name"},
+            {"data": "password"},
+            {"data": "realName"},
+            {
+                "data": "status", "render": function (data) {
+                    if (data == 0) {
+                        return "禁用"
+                    }
+                    if (data == 1) {
+                        return "启用"
+                    }
+                    return ' ';
+                }
+            },
+            {
+                "data": "id", "render": function (data) {
+                    var html = '<a href="' + ctx + '/front/questionnaire?userId=' + data + '" target="_blank">二维码</a><br>' +
+                        '<img id="img_' + data + '" src="' + ctx + '/user/qrCode?userId=' + data + '"/>';
+                    return html;
+                }
+            },
+            {"data": null}
+        ],
+        "language": {
+            "url": ctx + '/static/plugins/datatables/language-chinese.json'
+        }
+    });
+});
+
+function search() {
+    table.ajax.reload();
+}
+
+function deleteFun(id) {
+    commonFn.deleteData(id, ctx + "/api/user/delete", table);
+}
+
+function updateFun(id) {
+    $form.validate().resetForm();
+    commonFn.removeClass();
+    $("#id").val(id);
+    $.getJSON(ctx + "/api/user/getById", {id: id}, function (data) {
+        $("#name").val(data.name);
+        $("#password").val(data.password);
+        $("#realName").val(data.realName);
+    });
+    $("#addModal").modal('show');
+    $("#addLabel").html("编辑用户");
+}
+
+var $form = $('#addForm');
+
+function addFun() {
+    $form.validate().resetForm();
+    commonFn.removeClass();
+    $("#id").val("");
+    $("#name").val("");
+    $("#password").val("");
+    $("#realName").val("");
+    $("#addLabel").html("添加用户");
+    $("#saveBtn").prop("disabled", false);
+}
+
+$(document).ready(function () {
+    commonFn.formSubmit($form, "saveBtn", "addModal", "", function ($form) {
+        addFormRule($form)
+    });
+});
+
+function addFormRule($form) {
+    $form.find("input[name='name']").rules("add", {required: true, messages: {required: "请输入机构名称"}});
+}
+
+

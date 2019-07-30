@@ -1,0 +1,19 @@
+package com.hmn.ym.manager.common.config;
+
+import org.springframework.context.annotation.Configuration;
+import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+
+import javax.annotation.Resource;
+
+@Configuration
+public class InterceptorAdapter implements WebMvcConfigurer {
+    @Resource
+    private AdminInterceptor adminInterceptor;
+
+    @Override
+    public void addInterceptors(InterceptorRegistry registry) {
+        registry.addInterceptor(adminInterceptor).addPathPatterns("/**").excludePathPatterns("static/**").excludePathPatterns("js/**").
+                excludePathPatterns("metronic/**").excludePathPatterns("plugins/**");
+    }
+}

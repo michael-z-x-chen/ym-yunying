@@ -1,0 +1,287 @@
+function postData(questionNum, questionName, answerValue, optionName, optionValue, type) {
+    var answerId = $("#answerId").val();
+    $.ajax({
+        type: 'POST',
+        url: ctx + "/api/answer/answerQuestion",
+        data: {
+            answerId: answerId,
+            questionNum: questionNum,
+            questionName: questionName,
+            answerValue: answerValue,
+            optionName: optionName,
+            optionValue: optionValue,
+            type: type
+        }
+    });
+}
+
+// 是否既往检测HIV抗体阳性
+$('input[type=radio][name=T02a]').change(function () {
+    var val = this.value;
+    postData("T02a", "是否是既往检测HIV抗体阳性", "", getText(val), val, 1);
+});
+
+//第三十八题 最早确证检测为阳性年份
+$("#T02b").blur(function () {
+    var val = $(this).val();
+    if (!isNum(val)) {
+        layer.open({content: "请输入正确数字", skin: "msg", time: 2});
+        return;
+    }
+    var min = $(this).attr("data-min");
+    var max = $(this).attr("data-max");
+    if (min != null && min != "") {
+        if (parseFloat(val) < parseFloat(min)) {
+            layer.open({content: "最小值" + min, skin: "msg", time: 2});
+            return;
+        }
+    }
+    if (max != null && max != "") {
+        if (parseFloat(val) > parseFloat(max)) {
+            layer.open({content: "最大值" + max, skin: "msg", time: 2});
+            return;
+        }
+    }
+    if (val == null || val == "") {
+        layer.open({content: "该题目必须回答", skin: "msg", time: 2});
+        return;
+    }
+    postData("T02b", "最早确证检测为阳性年份", val, "", "", 2);
+});
+
+//第三十九题 最早确证检测为阳性月份
+$("#T02c").blur(function () {
+    var val = $(this).val();
+    if (!isNum(val)) {
+        layer.open({content: "请输入正确数字", skin: "msg", time: 2});
+        return;
+    }
+    var min = $(this).attr("data-min");
+    var max = $(this).attr("data-max");
+    if (min != null && min != "") {
+        if (parseFloat(val) < parseFloat(min)) {
+            layer.open({content: "最小值" + min, skin: "msg", time: 2});
+            return;
+        }
+    }
+    if (max != null && max != "") {
+        if (parseFloat(val) > parseFloat(max)) {
+            layer.open({content: "最大值" + max, skin: "msg", time: 2});
+            return;
+        }
+    }
+    if (val == null || val == "") {
+        layer.open({content: "该题目必须回答", skin: "msg", time: 2});
+        return;
+    }
+    postData("T02c", "最早确证检测为阳性月份", val, "", "", 2);
+});
+
+//第四十一题 HIV第一次ELISA初筛
+$('input[type=radio][name=T03]').change(function () {
+    var val = this.value;
+    T03 = this.value;
+    postData("T03", "HIV第一次ELISA初筛", "", getText2(val), val, 1);
+    hiv();
+});
+
+//第四十二题 HIV第二次ELISA复筛
+$('input[type=radio][name=T03a]').change(function () {
+    var val = this.value;
+    T03a = this.value;
+    postData("T03a", "HIV第二次ELISA复筛", "", getText2(val), val, 1);
+    hiv();
+});
+
+//第四十三题 WB确证结果
+$('input[type=radio][name=T03b]').change(function () {
+    var val = this.value;
+    postData("T03b", "HIV抗体确认试验结果", "", getText2(val), val, 1);
+});
+
+//第四十五题 梅毒ELISA检测结果
+$('input[type=radio][name=T04]').change(function () {
+    var val = this.value;
+    T04 = this.value;
+    postData("T04", "梅毒ELISA检测结果", "", getText2(val), val, 1);
+    syphilis();
+});
+
+//第四十六题 梅毒RPR/TRUST检测结果
+$('input[type=radio][name=T04a]').change(function () {
+    var val = this.value;
+    T04a = this.value;
+    postData("T04a", "梅毒RPR/TRUST检测结果", "", getText2(val), val, 1);
+    syphilis();
+});
+
+//第四十八题 HCV第一次ELISA初筛
+$('input[type=radio][name=T05]').change(function () {
+    var val = this.value;
+    T05 = this.value;
+    postData("T05", "HCV第一次ELISA初筛", "", getText2(val), val, 1);
+    hcv();
+});
+
+//第四十九题 HCV第二次ELISA复筛
+$('input[type=radio][name=T05a]').change(function () {
+    var val = this.value;
+    T05a = this.value;
+    postData("T05a", "HCV第二次ELISA复筛", "", getText2(val), val, 1);
+    hcv();
+});
+
+//第五十题 填表人签名
+$("#questionnaireNum").blur(function () {
+    var val = $(this).val();
+    if (val == null || val == "") {
+        layer.open({content: "该题目必须回答", skin: "msg", time: 2});
+        return;
+    }
+    var answerId = $("#answerId").val();
+    $.ajax({
+        type: 'POST',
+        url: ctx + "/api/answer/updateAnswer",
+        data: {
+            id: answerId,
+            questionnaireNum: val,
+        }
+    });
+});
+
+//第五十题 填表人签名
+$("#inspectorSign").blur(function () {
+    var val = $(this).val();
+    if (val == null || val == "") {
+        layer.open({content: "该题目必须回答", skin: "msg", time: 2});
+        return;
+    }
+    var answerId = $("#answerId").val();
+    $.ajax({
+        type: 'POST',
+        url: ctx + "/api/answer/updateAnswer",
+        data: {
+            id: answerId,
+            inspectorSign: val,
+        }
+    });
+});
+
+
+//第五十二题  哨点负责人签名
+$("#supervisorSign").blur(function () {
+    var val = $(this).val();
+    if (val == null || val == "") {
+        layer.open({content: "该题目必须回答", skin: "msg", time: 2});
+        return;
+    }
+    var answerId = $("#answerId").val();
+    $.ajax({
+        type: 'POST',
+        url: ctx + "/api/answer/updateAnswer",
+        data: {
+            id: answerId,
+            supervisorSign: val,
+        }
+    });
+});
+
+//第五十三题  病例报告系统卡片ID
+$("#cardId").blur(function () {
+    var val = $(this).val();
+    if (val == null || val == "") {
+        layer.open({content: "该题目必须回答", skin: "msg", time: 2});
+        return;
+    }
+    var answerId = $("#answerId").val();
+    $.ajax({
+        type: 'POST',
+        url: ctx + "/api/answer/updateAnswer",
+        data: {
+            id: answerId,
+            cardId: val,
+        }
+    });
+});
+
+function hiv() {
+    var hiv = '阴性';
+    if (!isEmpty(T03) && !isEmpty(T03a) && T03 == 1 && T03a == 1) {
+        hiv = '阳性';
+    }
+    var answerId = $("#answerId").val();
+    $.ajax({
+        type: 'POST',
+        url: ctx + "/api/answer/updateAnswer",
+        data: {
+            id: answerId,
+            hiv: hiv,
+        }
+    });
+}
+
+function syphilis() {
+    var syphilis = '阴性';
+    if (T04 == 1 && T04a == 1 && !isEmpty(T04) && !isEmpty(T04a)) {
+        syphilis = '阳性';
+    }
+    var answerId = $("#answerId").val();
+    $.ajax({
+        type: 'POST',
+        url: ctx + "/api/answer/updateAnswer",
+        data: {
+            id: answerId,
+            syphilis: syphilis,
+        }
+    });
+}
+
+function hcv() {
+    var hcv = '阴性';
+    if (T05 == 1 && T05a == 1 && !isEmpty(T05) && !isEmpty(T05a)) {
+        hcv = '阳性';
+    }
+    var answerId = $("#answerId").val();
+    $.ajax({
+        type: 'POST',
+        url: ctx + "/api/answer/updateAnswer",
+        data: {
+            id: answerId,
+            hcv: hcv,
+        }
+    });
+}
+
+
+function getText(value) {
+    if (value == 1) {
+        return '是';
+    }
+    return '否';
+}
+
+function getText2(value) {
+    if (value == 1) {
+        return '阳性';
+    }
+    if (value == 2) {
+        return '阴性';
+    }
+    if (value == 3) {
+        return '可疑';
+    }
+    return '未检测';
+}
+
+function isNum(value) {
+    var g = /^\d+$/;
+    return g.test(value);
+}
+
+function isEmpty(val) {
+    if (val == '' || val == undefined || val == null || val.length == 0) {
+        return true;
+    }
+    return false;
+}
+

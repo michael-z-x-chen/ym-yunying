@@ -1,0 +1,60 @@
+package com.hmn.ym.common.utils;
+
+import com.hmn.ym.common.enums.ServerCode;
+import com.hmn.ym.common.exception.BizException;
+import com.hmn.ym.common.model.BaseResp;
+
+public final class RespUtils {
+
+    public static <T extends BaseResp> T success(Class<T> type) {
+        T t = null;
+        try {
+            t = (T) type.newInstance();
+            t.setStatus(ServerCode.SUCCESS.code());
+            t.setMessage(ServerCode.SUCCESS.message());
+        } catch (Exception e) {
+            throw new BizException(ServerCode.SYSTEM_ERROR.code(), "系统获取成功响应实例失败，type=" + type.getName());
+        }
+        return t;
+    }
+
+    public static <T extends BaseResp> T fail(Class<T> type) {
+        T t = null;
+        try {
+            t = (T) type.newInstance();
+            t.setStatus(ServerCode.PARAM_ERROR.code());
+            t.setMessage(ServerCode.PARAM_ERROR.message());
+        } catch (Exception e) {
+            throw new BizException(ServerCode.SYSTEM_ERROR.code(), "系统获取成功响应实例失败，type=" + type.getName());
+        }
+        return t;
+    }
+
+    public static <T extends BaseResp> T fail(Class<T> type, int code, String message) {
+        T t = null;
+        try {
+            t = (T) type.newInstance();
+            t.setStatus(code);
+            t.setMessage(message);
+        } catch (Exception e) {
+            throw new BizException(ServerCode.SYSTEM_ERROR.code(), "系统获取成功响应实例失败，type=" + type.getName());
+        }
+        return t;
+    }
+
+    public static <T extends BaseResp> T fail(Class<T> type, String message) {
+        T t = null;
+        try {
+            t = (T) type.newInstance();
+            t.setStatus(ServerCode.BIZ_ERROR.code());
+            t.setMessage(message);
+        } catch (Exception e) {
+            throw new BizException(ServerCode.SYSTEM_ERROR.code(), "系统获取成功响应实例失败，type=" + type.getName());
+        }
+        return t;
+    }
+
+    public static void throwSystemException(Throwable e) {
+        throw new BizException(ServerCode.SYSTEM_ERROR.code(), ServerCode.SYSTEM_ERROR.message() + ": " + e.getMessage());
+    }
+}

@@ -1,0 +1,59 @@
+var table;
+$(document).ready(function () {
+    table = $('#dataTables').DataTable({
+        "responsive": true,
+        "paginate": true,
+        "processing": true,
+        "serverSide": true,
+        "searching": false,
+        "ordering": false,
+        "pagingType": 'full_numbers',
+        "ajax": {
+            "url": ctx + '/api/answerQuestion/list',
+            "type": 'post',
+            "data": function (data) {
+                var answerId = $("#eq_answerId").val();
+                data.answerId = answerId;
+            }
+        },
+        "columns": [
+            {"data": "questionNum"},
+            {"data": "questionName"},
+            {"data": "answerValue"},
+            {"data": "optionName"},
+            {"data": "optionValue"},
+            {
+                "data": "type", "render": function (data) {
+                    if (data == 1) {
+                        return "单选"
+                    }
+                    if (data == 2) {
+                        return "填空"
+                    }
+                    if (data == 3) {
+                        return "下拉选择"
+                    }
+                    return ' ';
+                }
+            },
+            {
+                "data": "createTime", "render": function (data) {
+                    return (new Date(data)).Format("yyyy-MM-dd hh:mm:ss");
+                }
+            },
+        ],
+        "language": {
+            "url": ctx + '/static/plugins/datatables/language-chinese.json'
+        }
+    });
+});
+
+function search() {
+    table.ajax.reload();
+}
+
+
+
+
+
+

@@ -1,0 +1,36 @@
+package com.hmn.ym.manager.common.config;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Component;
+import org.springframework.web.method.HandlerMethod;
+import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.lang.reflect.Method;
+
+/**
+ * 管理平台拦截器
+ * <p>
+ * 包括登录信息、权限信息
+ */
+@Component
+public class AdminInterceptor extends HandlerInterceptorAdapter {
+    private static final Logger logger = LoggerFactory.getLogger(AdminInterceptor.class);
+
+    @Override
+    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
+        try {
+            if (handler instanceof HandlerMethod) {
+                // 从切点上获取目标方法
+                HandlerMethod handlerMethod = (HandlerMethod) handler;
+
+                Method method = handlerMethod.getMethod();
+            }
+        } catch (Exception e) {
+            logger.error("权限过滤失败：" + e.getMessage(), e);
+        }
+        return true;
+    }
+}

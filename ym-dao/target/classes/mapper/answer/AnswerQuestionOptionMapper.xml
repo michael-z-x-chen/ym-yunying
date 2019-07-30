@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hmn.ym.dao.mapper.answer.AnswerQuestionOptionMapper">
+  <resultMap id="BaseResultMap" type="com.hmn.ym.dao.entities.po.answer.AnswerQuestionOption">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <result column="id" jdbcType="INTEGER" property="id" />
+    <result column="answer_question_id" jdbcType="INTEGER" property="answerQuestionId" />
+    <result column="question_option_id" jdbcType="INTEGER" property="questionOptionId" />
+    <result column="question_option_value" jdbcType="VARCHAR" property="questionOptionValue" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+  </resultMap>
+</mapper>

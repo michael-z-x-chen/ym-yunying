@@ -1,0 +1,22 @@
+package com.hmn.ym.dao.entities.vo.system;
+
+import lombok.Data;
+
+@Data
+public class TreeModel {
+    // 节点ID
+    public int id;
+    // 父节点ID
+    public int pid;
+    // 节点名称
+    public String name;
+    public String file;
+    public String url;
+    // 是否折叠，默认为false
+    public boolean open;
+    public boolean isParent;
+    public String target;
+    public String title;
+    // 组ID
+    public int gid;
+}

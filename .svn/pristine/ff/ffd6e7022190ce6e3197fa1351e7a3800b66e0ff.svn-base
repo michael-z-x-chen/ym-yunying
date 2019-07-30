@@ -1,0 +1,45 @@
+package com.hmn.ym.manager.service.system;
+
+
+import com.hmn.ym.dao.entities.po.system.Permission;
+import com.hmn.ym.dao.entities.vo.DataTablePage;
+import com.hmn.ym.dao.entities.vo.system.PermissionPageVo;
+import com.hmn.ym.dao.entities.vo.system.PermissionVo;
+import com.hmn.ym.manager.service.BaseService;
+
+import java.util.List;
+
+public interface IPermissionService extends BaseService<Permission> {
+
+    /**
+     * 获取分页
+     *
+     * @param vo
+     * @return
+     */
+    DataTablePage<PermissionVo> page(PermissionPageVo vo);
+
+    /**
+     * 通过menuId获取按钮
+     *
+     * @param menuIds
+     * @param roleId
+     * @return
+     */
+    List<PermissionVo> listByMenuId(String menuIds, Integer roleId);
+
+    /**
+     * 保存
+     *
+     * @param vo
+     */
+    void save(PermissionVo vo);
+
+
+    /**
+     * 删除
+     *
+     * @param id
+     */
+    void delete(Integer id);
+}

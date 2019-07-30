@@ -1,0 +1,63 @@
+package com.hmn.ym.dao.entities.po.question;
+
+import java.io.Serializable;
+import java.util.Date;
+import javax.persistence.*;
+
+import lombok.Data;
+
+@Table(name = "t_question_option")
+@Data
+public class QuestionOption implements Serializable {
+    /**
+     * 主键ID
+     */
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer id;
+
+    /**
+     * 选项名称
+     */
+    private String name;
+
+    /**
+     * 选项值
+     */
+    private String value;
+
+    /**
+     * 问题Id
+     */
+    @Column(name = "question_id")
+    private Integer questionId;
+
+    /**
+     * 跳题编号(如果支持跳题，则为跳题Id，否则为空)
+     */
+    @Column(name = "jump_question_code")
+    private String jumpQuestionCode;
+
+    /**
+     * 权重
+     */
+    private String weight;
+
+    /**
+     * 是否已删除(0：未删除 1 ：已删除）
+     */
+    private Integer deleted;
+
+    /**
+     * 创建时间
+     */
+    @Column(name = "create_time")
+    private Date createTime;
+
+    /**
+     * 更新时间
+     */
+    @Column(name = "update_time")
+    private Date updateTime;
+
+    private static final long serialVersionUID = 1L;
+}

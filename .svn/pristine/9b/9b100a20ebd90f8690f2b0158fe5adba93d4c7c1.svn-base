@@ -1,0 +1,32 @@
+package com.hmn.ym.manager.web.rest.system;
+
+import com.hmn.ym.dao.entities.po.system.User;
+import com.hmn.ym.dao.entities.vo.BaseVo;
+import com.hmn.ym.dao.entities.vo.system.UserVo;
+import com.hmn.ym.manager.service.system.UserService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import javax.servlet.http.HttpServletResponse;
+
+/**
+ * 用户管理
+ *
+ * @author xufz
+ */
+@RestController
+@RequestMapping("/api/user")
+public class UserRestController {
+    @Autowired
+    private UserService userService;
+
+    @RequestMapping("updatePassword")
+    public void updatePassword(UserVo param, HttpServletResponse resp) {
+    }
+
+    @RequestMapping("delete")
+    public void delete(BaseVo param, HttpServletResponse resp) {
+    }
+}

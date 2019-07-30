@@ -1,0 +1,78 @@
+var table;
+$(document).ready(function () {
+    table = $('#dataTables').DataTable({
+        "responsive": true,
+        "paginate": true,
+        "processing": true,
+        "serverSide": true,
+        "searching": false,
+        "ordering": false,
+        "pagingType": 'full_numbers',
+        "ajax": {
+            "url": ctx + '/api/project/list',
+            "type": 'post'
+        },
+        "columnDefs": [{
+            "aTargets": [3],
+            "mData": "download_link",
+            "mRender": function (data) {
+                var html = '<a class="btn btn-sm blue btn-outline filter-cancel" href="javascript:editFun(\'' + data.id + '\',\'' + data.name + '\',\'' + data.remark + '\')"><i class="fa fa-edit"></i>编辑</a>\n';
+                html += '<a class="btn btn-sm red btn-outline filter-cancel" href="javascript:deleteFun(' + data.id + ')"><i class="fa fa-remove"></i>删除</a>';
+
+                return html;
+            }
+        }],
+        "columns": [
+            {"data": "name"},
+            {"data": "remark"},
+            {
+                "data": "createTime", "render": function (data) {
+                    return (new Date(data)).Format("yyyy-MM-dd hh:mm:ss");
+                }
+            },
+            {"data": null}
+        ],
+        "language": {
+            "url": ctx + '/static/plugins/datatables/language-chinese.json'
+        }
+    });
+});
+
+function deleteFun(id) {
+    commonFn.deleteData(id, ctx + "/api/project/delete", table);
+}
+
+var $form = $('#addForm');
+
+function editFun(id, name, remark) {
+    $form.validate().resetForm();
+    commonFn.removeClass();
+
+    $("#id").val(id);
+    $("#name").val(name);
+    $("#remark").val(remark);
+    $("#addModal").modal('show');
+    $("#addModalLabel").html("编辑项目");
+}
+
+function addFun() {
+    $form.validate().resetForm();
+    commonFn.removeClass();
+    commonFn.emptyVal();
+
+    $("#addModalLabel").html("添加项目");
+    $("#saveBtn").prop("disabled", false);
+}
+
+$(document).ready(function () {
+    commonFn.formSubmit($form, "saveBtn", "addModal", "", function ($form) {
+        addFormRule($form)
+    });
+});
+
+function addFormRule($form) {
+    $form.find("input[name='name']").rules("add", {required: true, messages: {required: "请输入项目名称"}});
+}
+
+
+

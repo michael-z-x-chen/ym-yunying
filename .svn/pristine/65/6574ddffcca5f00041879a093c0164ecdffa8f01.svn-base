@@ -1,0 +1,143 @@
+<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib uri="http://shiro.apache.org/tags" prefix="shiro" %>
+<c:set var="ctx" value="${pageContext.request.contextPath}"/>
+<html>
+<head>
+    <!-- DataTables  -->
+    <link href="${ctx}/static/plugins/datatables-plugins/dataTables.bootstrap.css" rel="stylesheet">
+    <link href="${ctx}/static/plugins/datatables-responsive/dataTables.responsive.css" rel="stylesheet">
+    <script src="${ctx}/static/plugins/datatables/js/jquery.dataTables.min.js"></script>
+    <script src="${ctx}/static/plugins/datatables-plugins/dataTables.bootstrap.min.js"></script>
+    <script src="${ctx}/static/plugins/datatables-responsive/dataTables.responsive.js"></script>
+
+    <script src="${ctx}/static/plugins/jquery/formateDate.js"></script>
+
+    <%--引进时间选择器--%>
+    <link href="${ctx}/static/metronic/assets/global/plugins/bootstrap-datetimepicker-master/css/bootstrap-datetimepicker.min.css" rel="stylesheet">
+    <script src="${ctx}/static/metronic/assets/global/plugins/bootstrap-datetimepicker-master/js/bootstrap-datetimepicker.js" charset="UTF-8"></script>
+    <script src="${ctx}/static/metronic/assets/global/plugins/bootstrap-datetimepicker-master/js/locales/bootstrap-datetimepicker.zh-CN.js" charset="UTF-8"></script>
+    <script src="${ctx}/static/js/see-admin-common.js"></script>
+    <script src="${ctx}/static/front/js/distpicker.js"></script>
+    <script>
+        var ctx = '${ctx}';
+    </script>
+</head>
+<body>
+<div class="row">
+    <div class="col-md-12">
+        <div class="portlet light bordered">
+            <div class="portlet-title">
+                <div class="caption">
+                    <i class="icon-settings font-green"></i>
+                    <span class="caption-subject font-green sbold uppercase">评估信息列表</span>
+                </div>
+                <div class="actions">
+                    <div class="btn-group">
+                        <a class="btn green" onclick="excelFun()">导出Excel</a>
+                    </div>
+                </div>
+            </div>
+            <div class="panel-heading">
+                <div class="row">
+                    <div class="col-lg-12 col-md-12 col-sm-12" id="distpicker">
+                        <div class="col-lg-2">
+                            <select class="form-control" id="eq_provinceName" data-province="请选择省份">
+                                <option value="">请选择省份</option>
+                            </select>
+                        </div>
+                        <div class="col-lg-2">
+                            <select class="form-control" id="eq_cityName" data-city="请选择城市">
+                                <option value="">请选择城市</option>
+                            </select>
+                        </div>
+                        <div class="col-lg-2">
+                            <select class="form-control" id="eq_areaName" data-district="请选择地区">
+                                <option value="">请选择地区</option>
+                            </select>
+                        </div>
+
+                        <div class="col-lg-2">
+                            <select class="form-control" id="eq_status">
+                                <option value="">请选择状态</option>
+                                <option value="1">答题完成</option>
+                                <option value="2">答题中断</option>
+                            </select>
+                        </div>
+                        <div class="col-lg-2">
+                            <select class="form-control" id="eq_hiv">
+                                <option value="">HIV检测</option>
+                                <option value="阴性">阴性</option>
+                                <option value="阳性">阳性</option>
+                            </select>
+                        </div>
+                        <div class="col-lg-2">
+                            <select class="form-control" id="eq_syphilis">
+                                <option value="">梅毒检测</option>
+                                <option value="阴性">阴性</option>
+                                <option value="阳性">阳性</option>
+                            </select>
+                        </div>
+                        <div class="col-lg-2">
+                            <select class="form-control" id="eq_hcv" name="eq_hcv">
+                                <option value="">丙肝检测</option>
+                                <option value="阴性">阴性</option>
+                                <option value="阳性">阳性</option>
+                            </select>
+                        </div>
+                        <div class="col-lg-2">
+                            <input class="form-control" type="text" value="" id="eq_sentinelUnit" placeholder="报告单位">
+                        </div>
+                        <div class="col-lg-2">
+                            <input class="form-control" type="text" value="" id="eq_answerNum" placeholder="答卷编号">
+                        </div>
+                        <div class="col-lg-2">
+                            <input class="form-control" type="text" value="" id="eq_checkNum" placeholder="绑定编号">
+                        </div>
+                        <div class="col-lg-2 col-md-2 col-sm-2">
+                            <div class="input-group date form_datetime" id="eq_startTime_div">
+                                <input class="form-control" type="text" value="" id="eq_startTime" placeholder="开始时间">
+                                <span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>
+                            </div>
+                        </div>
+                        <div class="col-lg-2 col-md-2 col-sm-2">
+                            <div class="input-group date form_datetime" id="eq_endTime_div">
+                                <input class="form-control" type="text" value="" id="eq_endTime" placeholder="结束时间">
+                                <span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>
+                            </div>
+                        </div>
+
+                        <div class="col-lg-3 col-md-3 col-sm-3">
+                            <button type="button" class="btn btn-primary" onclick="search()" id="searchLoggingBtn"><i class="glyphicon glyphicon-search"></i> 查询
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="portlet-body">
+                <table width="100%" class="table table-striped table-bordered table-hover" id="dataTables">
+                    <thead>
+                    <tr>
+                        <th>报告地区</th>
+                        <th>报告单位</th>
+                        <th>答卷编号</th>
+                        <th>绑定编号</th>
+                        <th>调查时间</th>
+                        <th>HIV检测</th>
+                        <th>梅毒检测</th>
+                        <th>丙肝检测</th>
+                        <th>状态</th>
+                        <th>操作</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="${ctx}/static/js/answer/answer-list.js"></script>
+</body>
+</html>

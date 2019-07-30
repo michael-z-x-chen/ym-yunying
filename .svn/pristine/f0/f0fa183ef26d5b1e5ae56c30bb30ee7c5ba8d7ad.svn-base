@@ -1,0 +1,79 @@
+package com.hmn.ym.manager.service.system;
+
+import com.hmn.ym.dao.entities.po.system.Menu;
+import com.hmn.ym.dao.entities.po.system.Permission;
+import com.hmn.ym.dao.entities.vo.DataTablePage;
+import com.hmn.ym.dao.entities.vo.system.MenuPageVo;
+import com.hmn.ym.dao.entities.vo.system.MenuVo;
+import com.hmn.ym.dao.entities.vo.system.TreeModel;
+import com.hmn.ym.manager.service.BaseService;
+
+import java.util.List;
+
+public interface IMenuService extends BaseService<Menu> {
+
+    /**
+     * 获取菜单分页
+     *
+     * @param vo
+     * @return
+     */
+    DataTablePage<MenuVo> page(MenuPageVo vo);
+
+    /**
+     * 获取菜单树
+     *
+     * @param vo
+     * @return
+     */
+    List<TreeModel> tree(MenuPageVo vo);
+
+    /**
+     * 通过Id获取菜单
+     *
+     * @param id
+     * @return
+     */
+    Menu getById(Integer id);
+
+
+    /**
+     * 获取菜单
+     *
+     * @return
+     */
+    List<Menu> listByProjectId(Integer projectId);
+
+    /**
+     * 保存菜单
+     *
+     * @param vo
+     */
+    void save(MenuVo vo);
+
+
+    /**
+     * 删除角色
+     *
+     * @param id
+     */
+    void delete(Integer id);
+
+
+    /**
+     * 获取用户权限菜单树
+     *
+     * @param userId
+     * @return
+     */
+    List<MenuVo> listByUserId(Integer userId, Integer projectId);
+
+    /**
+     * 获取用户权限菜单
+     *
+     * @param userId
+     * @return
+     */
+    List<MenuVo> getByUserId(Integer userId, Integer projectId);
+
+}

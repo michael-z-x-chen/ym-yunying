@@ -1,0 +1,920 @@
+<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<c:set var="ctx" value="${pageContext.request.contextPath}"/>
+<!DOCTYPE html>
+<html lang="en-US">
+<meta http-equiv="content-type" content="text/html;charset=UTF-8"/>
+<head>
+    <meta charset="UTF-8"/>
+    <meta content="yes" name="apple-mobile-web-app-capable"/>
+    <meta content="black" name="apple-mobile-web-app-status-bar-style"/>
+    <meta name="format-detection" content="telephone=no"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"/>
+    <link rel="stylesheet" href="${ctx}/static/front/css/reset.css"/>
+    <link rel="stylesheet" href="${ctx}/static/front/css/toup_old.css"/>
+    <link rel="stylesheet" href="${ctx}/static/front/swiper/swiper.min.css"/>
+    <link rel="stylesheet" href="${ctx}/static/plugins/layer_mobile/need/layer.css"/>
+    <script src="${ctx}/static/front/js/jquery-1.11.3.js"></script>
+    <script src="${ctx}/static/front/js/fontSize.js"></script>
+    <script src="${ctx}/static/front/js/distpicker.js"></script>
+    <script src="${ctx}/static/front/js/commom.data.js"></script>
+    <script src="${ctx}/static/front/js/postData.js"></script>
+    <script src="${ctx}/static/front/js/commonFun.js"></script>
+    <script src="${ctx}/static/front/js/jquery.qrcode.min.js"></script>
+    <script src="${ctx}/static/plugins/layer_mobile/layer.js"></script>
+    <title>流动问卷</title>
+    <script>
+        var ctx = '${ctx}';
+        var finish = '${finish}';
+        var userId = '${userId}';
+    </script>
+    <style>
+        .intCl {
+            width: 70%;
+            height: 0.63rem;
+            border: 1px solid #c5c8cc;
+            border-radius: 0.12rem;
+            line-height: 0.63rem;
+            font-size: 0.27rem;
+            padding: 0 0.2rem;
+            box-sizing: border-box;
+            margin-bottom: 0.8rem;
+            margin-left: 90px;
+        }
+
+        .error {
+            color: #f00;
+            border: 1px solid #ce7979;
+            background: #fff7fa;
+        }
+    </style>
+</head>
+
+<body>
+<section class="toup" id="t0">
+    <div class="swipers">
+        <div class="swiper-slide">
+            <div class="scores">
+                <h3>基本信息</h3>
+                <div class="f">
+                    <span>调查日期</span>
+                </div>
+                <div class="f ">
+                    <input type="date" class="questionNameText0 intCl date" style="margin-left:auto;" name="questionName_3" id="dateTime"/>
+                </div>
+            </div>
+        </div>
+        <a href="javascript:;" class="dateSubmit">下一步</a>
+    </div>
+</section>
+<section class="toup" id="t1">
+    <div class="swipers">
+        <div class="con">
+            <h1>
+                我们正在进行一项调查，目的是了解人们对一些健康问题的知识和行为状况。请放心，本次调查不记名，我们会对你的回答保密。我们希望你的回答是你个人的真实情况。调查大约会占用你10分钟时间，调查结束时我可以为你提供一些帮助（例如你可以咨询一些健康方面的问题，我会尽量解答）。希望你支持我们的工作。谢谢！
+            </h1>
+        </div>
+        <a href="javascript:;" class="jion">开始</a>
+    </div>
+</section>
+<section class="toup" id="t2">
+    <div class="swipers">
+        <!-- 上下 -->
+        <div class="swiper-container swiper-no-swiping">
+            <div class="swiper-wrapper">
+                <div class="swiper-slide" id="swiper_0">
+                    <div class="scores">
+                        <h3>当前第1题，共34题</h3>
+                        <div class="f">
+                            <span class="cout">1</span>
+                            <span data-num="A06" class="questionName">样本来源</span>
+                        </div>
+                        <div class="choose ">
+                            <div class="input">
+                                <input type="radio" class="questionOptionNameRadio" name="questionOptionName_1" id="question_1" value="1"/>
+                                <label for="question_1">建筑工人</label>
+                            </div>
+                            <div class="input">
+                                <input type="radio" class="questionOptionNameRadio" name="questionOptionName_1" id="question_2" value="2"/>
+                                <label for="question_2">矿工</label>
+                            </div>
+                            <div class="input">
+                                <input type="radio" class="questionOptionNameRadio" name="questionOptionName_1" id="question_3" value="3"/>
+                                <label for="question_3">企业工人</label>
+                            </div>
+                            <div class="input">
+                                <input type="radio" class="questionOptionNameRadio" name="questionOptionName_1" id="question_4" value="4"/>
+                                <label for="question_4">商贸经营</label>
+                            </div>
+                            <div class="input" style="display: flex;">
+                                <input type="radio" class="questionOptionNameRadio" name="questionOptionName_1" id="question_5" value="5"/>
+                                <label for="question_5">其它</label>
+                                <input type="text" class=" intCl disabled_2" name="questionOptionName_2" id="question_6" value=""/>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="swiper-slide" id="swiper_1">
+                    <div class="scores">
+                        <h3>当前第2题，共34题</h3>
+                        <div class="f">
+                            <span class="cout">2</span>
+                            <span data-num="B01" class="questionName">性别</span>
+                        </div>
+
+                        <div class="choose ">
+                            <div class="input">
+                                <input type="radio" class="questionOptionNameRadio" name="questionOptionName_5" id="question_7" value="1"/>
+                                <label for="question_7">男</label>
+                            </div>
+
+                            <div class="input">
+                                <input type="radio" class="questionOptionNameRadio" name="questionOptionName_5" id="question_8" value="2"/>
+                                <label for="question_8">女</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="swiper-slide" id="swiper_2">
+                    <div class="scores">
+                        <h3>当前第3题，共34题</h3>
+                        <div class="f">
+                            <span class="cout">3</span>
+                            <span data-num="B02" class="questionName">出生年（举例说明：1990）</span>
+                        </div>
+                        <div class="choose ">
+                            <input type="text" class="questionNameText intCl" name="questionOptionName_4" id="question_9" value="" data-min="1920"
+                                   data-max="2019"/>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="swiper-slide" id="swiper_3">
+                    <div class="scores">
+                        <h3>当前第4题，共34题</h3>
+                        <div class="f">
+                            <span class="cout">4</span>
+                            <span data-num="B03" class="questionName">婚姻状况</span>
+                        </div>
+                        <div class="choose ">
+                            <div class="input">
+                                <input type="radio" class="questionOptionNameRadio" name="questionOptionName_6" id="question_11" value="1"/>
+                                <label for="question_11">未婚</label>
+                            </div>
+                            <div class="input">
+                                <input type="radio" class="questionOptionNameRadio" name="questionOptionName_6" id="question_12" value="2"/>
+                                <label for="question_12">在婚</label>
+                            </div>
+                            <div class="input">
+                                <input type="radio" class="questionOptionNameRadio" name="questionOptionName_6" id="question_13" value="3"/>
+                                <label for="question_13">同居</label>
+                            </div>
+                            <div class="input">
+                                <input type="radio" class="questionOptionNameRadio" name="questionOptionName_6" id="question_14" value="4"/>
+                                <label for="question_14">离异或丧偶</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="swiper-slide" id="swiper_4">
+                    <div class="scores">
+                        <h3 style="line-height: 1rem;">当前第5题，共34题</h3>
+                        <div class="input" id="distpicker">
+                            <p style="line-height:0" id="countryDiv">
+                                <label style="font-size: 20px;">国籍</label>
+                                <select name="questionName_10" class="countrys intCl" style="width: 50%;" id="countrys"></select>
+                            </p>
+
+                            <p style="line-height:0" id="provinceDiv">
+                                <label style="font-size: 20px;">户籍所在省份</label>
+                                <select name="questionName_7" class="province intCl" data-province="请选择省份" style="width: 50%;margin-left:auto;"
+                                        id="province"></select>
+                            </p>
+                            <p style="line-height:0" id="cityDiv">
+                                <label style="font-size: 20px;">户籍所在城市</label>
+                                <select name="questionName_8" class="citys intCl" style="width: 50%;margin-left:auto;" data-city="请选择城市"
+                                        id="citys"></select>
+                            </p>
+                            <p style="line-height:0" id="areaDiv">
+                                <label style="font-size: 20px;">户籍所在区县</label>
+                                <select name="questionName_9" class="countys intCl" data-district="请选择区县" style="width: 50%;margin-left:auto;"
+                                        id="area"></select>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                <div class="swiper-slide" id="swiper_5">
+                    <div class="scores">
+                        <h3>当前第6题，共34题</h3>
+                        <div class="f">
+                            <span class="cout">6</span>
+                            <span data-num="B05" class="questionName">民族</span>
+                        </div>
+                        <div class="f">
+                            <select class="nation intCl" id="nation"></select>
+                        </div>
+                    </div>
+                </div>
+                <div class="swiper-slide" id="swiper_6">
+                    <div class="scores">
+                        <h3>当前第7题，共34题</h3>
+                        <div class="f">
+                            <span class="cout">7</span>
+                            <span data-num="B06" class="questionName">本地居住时间</span>
+                        </div>
+                        <div class="choose ">
+                            <div class="input">
+                                <input type="radio" class="questionOptionNameRadio" name="questionOptionName_3" id="question_20" value="1"/>
+                                <label for="question_20">小于3个月</label>
+                            </div>
+                            <div class="input">
+                                <input type="radio" class="questionOptionNameRadio" name="questionOptionName_3" id="question_21" value="2"/>
+                                <label for="question_21">3～6个月</label>
+                            </div>
+                            <div class="input">
+                                <input type="radio" class="questionOptionNameRadio" name="questionOptionName_3" id="question_22" value="3"/>
+                                <label for="question_22">6～12个月</label>
+                            </div>
+                            <div class="input">
+                                <input type="radio" class="questionOptionNameRadio" name="questionOptionName_3" id="question_23" value="4"/>
+                                <label for="question_23">1年以上</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="swiper-slide" id="swiper_7">
+                    <div class="scores">
+                        <h3>当前第8题，共34题</h3>
+                        <div class="f">
+                            <span class="cout">8</span>
+                            <span data-num="B07" class="questionName">文化程度</span>
+                        </div>
+
+                        <div class="choose ">
+                            <div class="input">
+                                <input type="radio" class="questionOptionNameRadio" name="questionOptionName_7" id="question_24" value="1"/>
+                                <label for="question_24">文盲</label>
+                            </div>
+                            <div class="input">
+                                <input type="radio" class="questionOptionNameRadio" name="questionOptionName_7" id="question_25" value="2"/>
+                                <label for="question_25">小学</label>
+                            </div>
+
+                            <div class="input">
+                                <input type="radio" class="questionOptionNameRadio" name="questionOptionName_7" id="question_26" value="67"/>
+                                <label for="question_26">初中</label>
+                            </div>
+
+                            <div class="input">
+                                <input type="radio" class="questionOptionNameRadio" name="questionOptionName_7" id="question_27" value="4"/>
+                                <label for="question_27">高中或中专</label>
+                            </div>
+
+                            <div class="input">
+                                <input type="radio" class="questionOptionNameRadio" name="questionOptionName_7" id="question_28" value="5"/>
+                                <label for="question_28">大专及以上</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="swiper-slide" id="swiper_8">
+                    <div class="scores">
+                        <h3>当前第9题，共34题</h3>
+                        <div class="f">
+                            <span class="cout">9</span>
+                            <span data-num="C01" class="questionName">一个感染了艾滋病病毒的人能从外表上看出来吗？</span>
+                        </div>
+                        <div class="choose ">
+                            <div class="input">
+                                <input type="radio" class="questionOptionNameRadio" name="questionOptionName_14" id="question_29" value="1"/>
+                                <label for="question_29">能</label>
+                            </div>
+
+                            <div class="input">
+                                <input type="radio" class="questionOptionNameRadio" name="questionOptionName_14" id="question_30" value="0"/>
+                                <label for="question_30">不能</label>
+                            </div>
+
+                            <div class="input">
+                                <input type="radio" class="questionOptionNameRadio" name="questionOptionName_14" id="question_31" value="888"/>
+                                <label for="question_31">不知道</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="swiper-slide" id="swiper_9">
+                    <div class="scores">
+                        <h3>当前第10题，共34题</h3>
+                        <div class="f">
+                            <span class="cout">10</span>
+                            <span data-num="C02" class="questionName">蚊虫叮咬会传播艾滋病吗？</span>
+                        </div>
+                        <div class="choose ">
+                            <div class="input">
+                                <input type="radio" class="questionOptionNameRadio" name="questionOptionName_15" id="question_32" value="1"/>
+                                <label for="question_32">会</label>
+                            </div>
+                            <div class="input">
+                                <input type="radio" class="questionOptionNameRadio" name="questionOptionName_15" id="question_33" value="0"/>
+                                <label for="question_33">不会</label>
+                            </div>
+
+                            <div class="input">
+                                <input type="radio" class="questionOptionNameRadio" name="questionOptionName_15" id="question_34" value="888"/>
+                                <label for="question_34">不知道</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="swiper-slide" id="swiper_10">
+                    <div class="scores">
+                        <h3>当前第11题，共34题</h3>
+                        <div class="f">
+                            <span class="cout">11</span>
+                            <span data-num="C03" class="questionName">与艾滋病病毒感染者一起吃饭会感染艾滋病吗？</span>
+                        </div>
+                        <div class="choose ">
+                            <div class="input">
+                                <input type="radio" class="questionOptionNameRadio" name="questionOptionName_16" id="question_36" value="1"/>
+                                <label for="question_36">会</label>
+                            </div>
+                            <div class="input">
+                                <input type="radio" class="questionOptionNameRadio" name="questionOptionName_16" id="question_37" value="0"/>
+                                <label for="question_37">不会</label>
+                            </div>
+                            <div class="input">
+                                <input type="radio" class="questionOptionNameRadio" name="questionOptionName_16" id="question_35" value="888"/>
+                                <label for="question_35">不知道</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="swiper-slide" id="swiper_11">
+                    <div class="scores">
+                        <h3>当前第12题，共34题</h3>
+                        <div class="f">
+                            <span class="cout">12</span>
+                            <span data-num="C04" class="questionName">输入带有艾滋病病毒的血液会得艾滋病吗？</span>
+                        </div>
+
+                        <div class="choose ">
+                            <div class="input">
+                                <input type="radio" class="questionOptionNameRadio" name="questionOptionName_17" id="question_38" value="1"/>
+                                <label for="question_38">会</label>
+                            </div>
+                            <div class="input">
+                                <input type="radio" class="questionOptionNameRadio" name="questionOptionName_17" id="question_39" value="0"/>
+                                <label for="question_39">不会</label>
+                            </div>
+                            <div class="input">
+                                <input type="radio" class="questionOptionNameRadio" name="questionOptionName_17" id="question_40" value="888"/>
+                                <label for="question_40">不知道</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="swiper-slide" id="swiper_12">
+                    <div class="scores">
+                        <h3>当前第13题，共34题</h3>
+                        <div class="f">
+                            <span class="cout">13</span>
+                            <span data-num="C05" class="questionName">与艾滋病病毒感染者共用注射器有可能得艾滋病吗？</span>
+                        </div>
+
+                        <div class="choose ">
+                            <div class="input">
+                                <input type="radio" class="questionOptionNameRadio" name="questionOptionName_1112" id="question_41" value="1"/>
+                                <label for="question_41">可能</label>
+                            </div>
+                            <div class="input">
+                                <input type="radio" class="questionOptionNameRadio" name="questionOptionName_1112" id="question_42" value="0"/>
+                                <label for="question_42">不可能</label>
+                            </div>
+                            <div class="input">
+                                <input type="radio" class="questionOptionNameRadio" name="questionOptionName_1112" id="question_43" value="888"/>
+                                <label for="question_43">不知道</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="swiper-slide" id="swiper_13">
+                    <div class="scores">
+                        <h3>当前第14题，共34题</h3>
+                        <div class="f">
+                            <span class="cout">14</span>
+                            <span data-num="C06" class="questionName">感染艾滋病病毒的妇女生下的小孩有可能得艾滋病吗？</span>
+                        </div>
+
+                        <div class="choose ">
+                            <div class="input">
+                                <input type="radio" class="questionOptionNameRadio" name="questionOptionName_1113" id="question_44" value="1"/>
+                                <label for="question_44">可能</label>
+                            </div>
+                            <div class="input">
+                                <input type="radio" class="questionOptionNameRadio" name="questionOptionName_1113" id="question_45" value="0"/>
+                                <label for="question_45">不可能</label>
+                            </div>
+                            <div class="input">
+                                <input type="radio" class="questionOptionNameRadio" name="questionOptionName_1113" id="question_46" value="888"/>
+                                <label for="question_46">不知道</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="swiper-slide" id="swiper_14">
+                    <div class="scores">
+                        <h3>当前第15题，共34题</h3>
+                        <div class="f">
+                            <span class="cout">15</span>
+                            <span data-num="C07" class="questionName">正确使用安全套可以减少艾滋病的传播吗？</span>
+                        </div>
+
+                        <div class="choose ">
+                            <div class="input">
+                                <input type="radio" class="questionOptionNameRadio" name="questionOptionName_1114" id="question_47" value="1"/>
+                                <label for="question_47">可以</label>
+                            </div>
+                            <div class="input">
+                                <input type="radio" class="questionOptionNameRadio" name="questionOptionName_1114" id="question_48" value="0"/>
+                                <label for="question_48">不可以</label>
+                            </div>
+
+                            <div class="input">
+                                <input type="radio" class="questionOptionNameRadio" name="questionOptionName_1114" id="question_49" value="888"/>
+                                <label for="question_49">不知道</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="swiper-slide" id="swiper_15">
+                    <div class="scores">
+                        <h3>当前第16题，共34题</h3>
+                        <div class="f">
+                            <span class="cout">16</span>
+                            <span data-num="C08" class="questionName">只与一个性伴发生性行为可以减少艾滋病的传播吗？</span>
+                        </div>
+
+                        <div class="choose ">
+                            <div class="input">
+                                <input type="radio" class="questionOptionNameRadio" name="questionOptionName_1115" id="question_50" value="1"/>
+                                <label for="question_50">可以</label>
+                            </div>
+
+                            <div class="input">
+                                <input type="radio" class="questionOptionNameRadio" name="questionOptionName_1115" id="question_51" value="0"/>
+                                <label for="question_51">不可以</label>
+                            </div>
+
+                            <div class="input">
+                                <input type="radio" class="questionOptionNameRadio" name="questionOptionName_1115" id="question_52" value="888"/>
+                                <label for="question_52">不知道</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="swiper-slide" id="swiper_16">
+                    <div class="scores">
+                        <h3>当前第17题，共34题</h3>
+                        <div class="f">
+                            <span class="cout">17</span>
+                            <span data-num="D01" class="questionName">你有过性行为（指阴道交、肛交、口交）的经历吗？</span>
+                        </div>
+                        <div class="choose ">
+                            <div class="choose ">
+                                <div class="input">
+                                    <input type="radio" class="questionOptionNameRadio" name="questionOptionName_130" id="question_54" value="1"/>
+                                    <label for="question_54">是</label>
+                                </div>
+                                <div class="input">
+                                    <input type="radio" class="questionOptionNameRadio" name="questionOptionName_130" id="question_55" value="0"/>
+                                    <label for="question_55">否</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="swiper-slide" id="swiper_17">
+                    <div class="scores">
+                        <h3>当前第18题，共34题</h3>
+                        <div class="f">
+                            <span class="cout">18</span>
+                            <span data-num="D02" class="questionName">最近一年，你与她/他（配偶或同居者）发生性行为时使用安全套的频率如何？</span>
+                        </div>
+                        <div class="choose  question19">
+                            <div class="input">
+                                <input type="radio" class="questionOptionNameRadio" name="questionOptionName_132" id="question_66" value="1"/>
+                                <label for="question_66">从未使用</label>
+                            </div>
+
+                            <div class="input">
+                                <input type="radio" class="questionOptionNameRadio" name="questionOptionName_132" id="question_67" value="2"/>
+                                <label for="question_67">有时使用</label>
+                            </div>
+
+                            <div class="input">
+                                <input type="radio" class="questionOptionNameRadio" name="questionOptionName_132" id="question_68" value="3"/>
+                                <label for="question_68">每次都用</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="swiper-slide" id="swiper_18">
+                    <div class="scores">
+                        <h3>当前第19题，共34题</h3>
+                        <div class="f">
+                            <span class="cout">19</span>
+                            <span data-num="D03" class="questionName">最近一年，你最近一次与她/他（配偶或同居者）发生性行为时使用安全套了吗？</span>
+                        </div>
+                        <div class="choose ">
+                            <div class="input">
+                                <input type="radio" class="questionOptionNameRadio" name="questionOptionName_1119" id="question_79" value="1"/>
+                                <label for="question_79">是</label>
+                            </div>
+                            <div class="input">
+                                <input type="radio" class="questionOptionNameRadio" name="questionOptionName_1119" id="question_78" value="0"/>
+                                <label for="question_78">否</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="swiper-slide" id="swiper_19">
+                    <div class="scores">
+                        <h3>当前第20题，共34题</h3>
+                        <div class="f">
+                            <span class="cout">20</span>
+                            <span data-num="E01" class="questionName">最近一年，你与小姐（暗娼）发生过性行为吗？</span>
+                        </div>
+
+                        <div class="choose ">
+                            <div class="input">
+                                <input type="radio" class="questionOptionNameRadio" name="questionOptionName_133" id="question_89" value="1"/>
+                                <label for="question_89">是</label>
+                            </div>
+
+                            <div class="input">
+                                <input type="radio" class="questionOptionNameRadio" name="questionOptionName_133" id="question_90" value="0"/>
+                                <label for="question_90">否</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="swiper-slide" id="swiper_20">
+                    <div class="scores">
+                        <h3>当前第21题，共34题</h3>
+                        <div class="f">
+                            <span class="cout">21</span>
+                            <span data-num="E02" class="questionName">最近一年，你与小姐（暗娼）发生性行为时使用安全套的频率如何？</span>
+                        </div>
+                        <div class="choose ">
+                            <div class="input">
+                                <input type="radio" class="questionOptionNameRadio" name="questionOptionName_1121" id="question_63" value="1"/>
+                                <label for="question_63">从未使用</label>
+                            </div>
+                            <div class="input">
+                                <input type="radio" class="questionOptionNameRadio" name="questionOptionName_1121" id="question_64" value="2"/>
+                                <label for="question_64">有时使用</label>
+                            </div>
+                            <div class="input">
+                                <input type="radio" class="questionOptionNameRadio" name="questionOptionName_1121" id="question_65" value="3"/>
+                                <label for="question_65">每次都用</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="swiper-slide" id="swiper_21">
+                    <div class="scores">
+                        <h3>当前第22题，共34题</h3>
+                        <div class="f">
+                            <span class="cout">22</span>
+                            <span data-num="E03" class="questionName">最近一年，你最近一次与小姐(暗娼)发生性行为时使用安全套了吗？</span>
+                        </div>
+                        <div class="choose ">
+                            <div class="input">
+                                <input type="radio" class="questionOptionNameRadio" name="questionOptionName_1122" id="question_77" value="1"/>
+                                <label for="question_77">是</label>
+                            </div>
+                            <div class="input">
+                                <input type="radio" class="questionOptionNameRadio" name="questionOptionName_1122" id="question_76" value="0"/>
+                                <label for="question_76">否</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="swiper-slide" id="swiper_22">
+                    <div class="scores">
+                        <h3>当前第23题，共34题</h3>
+                        <div class="f">
+                            <span class="cout">23</span>
+                            <span data-num="F01" class="questionName">最近一年，你与临时性伴发生过性行为吗？（临时性伴是指非商业非固定性伴，即偶尔有性行为非商业性的异性性伴，如一夜情等。）</span>
+                        </div>
+                        <div class="choose ">
+                            <div class="input">
+                                <input type="radio" class="questionOptionNameRadio" name="questionOptionName_135" id="question_87" value="1"/>
+                                <label for="question_87">是</label>
+                            </div>
+                            <div class="input">
+                                <input type="radio" class="questionOptionNameRadio" name="questionOptionName_135" id="question_88" value="0"/>
+                                <label for="question_88">否</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="swiper-slide" id="swiper_23">
+                    <div class="scores">
+                        <h3>当前第24题，共34题</h3>
+                        <div class="f">
+                            <span class="cout">24</span>
+                            <span data-num="F02" class="questionName">最近一年，你与临时性伴发生性行为时使用安全套的频率如何？</span>
+                        </div>
+
+                        <div class="choose ">
+                            <div class="input">
+                                <input type="radio" class="questionOptionNameRadio" name="questionOptionName_1124" id="question_60" value="2"/>
+                                <label for="question_60">有时使用</label>
+                            </div>
+                            <div class="input">
+                                <input type="radio" class="questionOptionNameRadio" name="questionOptionName_1124" id="question_61" value="1"/>
+                                <label for="question_61">从未使用</label>
+                            </div>
+                            <div class="input">
+                                <input type="radio" class="questionOptionNameRadio" name="questionOptionName_1124" id="question_62" value="3"/>
+                                <label for="question_62">每次都用</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="swiper-slide" id="swiper_24">
+                    <div class="scores">
+                        <h3>当前第25题，共34题</h3>
+                        <div class="f">
+                            <span class="cout">25</span>
+                            <span data-num="F03" class="questionName">最近一年，你最近一次与临时性伴发生性行为时使用安全套了吗？</span>
+                        </div>
+                        <div class="choose ">
+                            <div class="input">
+                                <input type="radio" class="questionOptionNameRadio" name="questionOptionName_1125" id="question_74" value="0"/>
+                                <label for="question_74">否</label>
+                            </div>
+                            <div class="input">
+                                <input type="radio" class="questionOptionNameRadio" name="questionOptionName_1125" id="question_75" value="1"/>
+                                <label for="question_75">是</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="swiper-slide" id="swiper_25">
+                    <div class="scores">
+                        <h3>当前第26题，共34题</h3>
+                        <div class="f">
+                            <span class="cout">26</span>
+                            <span data-num="G01" class="questionName">最近一年，你与同性发生过肛交性行为吗？</span>
+                        </div>
+
+                        <div class="choose ">
+                            <div class="input">
+                                <input type="radio" class="questionOptionNameRadio" name="questionOptionName_1126" id="question_85" value="1"/>
+                                <label for="question_85">是</label>
+                            </div>
+                            <div class="input">
+                                <input type="radio" class="questionOptionNameRadio" name="questionOptionName_1126" id="question_86" value="0"/>
+                                <label for="question_86">否</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="swiper-slide" id="swiper_26">
+                    <div class="scores">
+                        <h3>当前第27题，共34题</h3>
+                        <div class="f">
+                            <span class="cout">27</span>
+                            <span data-num="G02" class="questionName">最近一年，你与同性发生过商业性行为吗？</span>
+                        </div>
+
+                        <div class="choose ">
+                            <div class="input">
+                                <input type="radio" class="questionOptionNameRadio" name="questionOptionName_1127" id="question_58" value="1"/>
+                                <label for="question_58">是</label>
+                            </div>
+
+                            <div class="input">
+                                <input type="radio" class="questionOptionNameRadio" name="questionOptionName_1127" id="question_59" value="0"/>
+                                <label for="question_59">否</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="swiper-slide" id="swiper_27">
+                    <div class="scores">
+                        <h3>当前第28题，共34题</h3>
+                        <div class="f">
+                            <span class="cout">28</span>
+                            <span data-num="G03" class="questionName">最近一年，你与同性发生肛交性行为时使用安全套的频率如何？</span>
+                        </div>
+
+                        <div class="choose ">
+                            <div class="input">
+                                <input type="radio" class="questionOptionNameRadio" name="questionOptionName_1128" id="question_71" value="3"/>
+                                <label for="question_71">每次都用</label>
+                            </div>
+
+                            <div class="input">
+                                <input type="radio" class="questionOptionNameRadio" name="questionOptionName_1128" id="question_72" value="1"/>
+                                <label for="question_72">从未使用</label>
+                            </div>
+
+                            <div class="input">
+                                <input type="radio" class="questionOptionNameRadio" name="questionOptionName_1128" id="question_73" value="2"/>
+                                <label for="question_73">有时使用</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="swiper-slide" id="swiper_28">
+                    <div class="scores">
+                        <h3>当前第29题，共34题</h3>
+                        <div class="f">
+                            <span class="cout">29</span>
+                            <span data-num="G04" class="questionName">最近一年，你最近一次与同性发生肛交性行为时使用安全套了吗？</span>
+                        </div>
+                        <div class="choose ">
+                            <div class="input">
+                                <input type="radio" class="questionOptionNameRadio" name="questionOptionName_1129" id="question_83" value="1"/>
+                                <label for="question_83">是</label>
+                            </div>
+                            <div class="input">
+                                <input type="radio" class="questionOptionNameRadio" name="questionOptionName_1129" id="question_84" value="0"/>
+                                <label for="question_84">否</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="swiper-slide" id="swiper_29">
+                    <div class="scores">
+                        <h3>当前第30题，共34题</h3>
+                        <div class="f">
+                            <span class="cout">30</span>
+                            <span data-num="H01" class="questionName">你吸毒吗？</span>
+                        </div>
+                        <div class="choose ">
+                            <div class="input">
+                                <input type="radio" class="questionOptionNameRadio" name="questionOptionName_1130" id="question_56" value="1"/>
+                                <label for="question_56">是</label>
+                            </div>
+
+                            <div class="input">
+                                <input type="radio" class="questionOptionNameRadio" name="questionOptionName_1130" id="question_57" value="0"/>
+                                <label for="question_57">否</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="swiper-slide" id="swiper_30">
+                    <div class="scores">
+                        <h3>当前第31题，共34题</h3>
+                        <div class="f">
+                            <span class="cout">31</span>
+                            <span data-num="H02" class="questionName">你注射过毒品吗？</span>
+                        </div>
+                        <div class="choose ">
+                            <div class="input">
+                                <input type="radio" class="questionOptionNameRadio" name="questionOptionName_136" id="question_91" value="1"/>
+                                <label for="question_91">是</label>
+                            </div>
+                            <div class="input">
+                                <input type="radio" class="questionOptionNameRadio" name="questionOptionName_136" id="question_92" value="0"/>
+                                <label for="question_92">否</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="swiper-slide" id="swiper_31">
+                    <div class="scores">
+                        <h3>当前第32题，共34题</h3>
+                        <div class="f">
+                            <span class="cout">32</span>
+                            <span data-num="H03" class="questionName">你与别人共用过针具吗？</span>
+                        </div>
+                        <div class="choose ">
+                            <div class="input">
+                                <input type="radio" class="questionOptionNameRadio" name="questionOptionName_1132" id="question_69" value="1"/>
+                                <label for="question_69">是</label>
+                            </div>
+                            <div class="input">
+                                <input type="radio" class="questionOptionNameRadio" name="questionOptionName_1132" id="question_70" value="0"/>
+                                <label for="question_70">否</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="swiper-slide" id="swiper_32">
+                    <div class="scores">
+                        <h3>当前第33题，共34题</h3>
+                        <div class="f">
+                            <span class="cout">33</span>
+                            <span data-num="H04" class="questionName">最近六个月注射毒品时，你与别人共用针具的频率如何？</span>
+                        </div>
+                        <div class="choose ">
+                            <div class="input">
+                                <input type="radio" class="questionOptionNameRadio" name="questionOptionName_1133" id="question_80" value="3"/>
+                                <label for="question_80">每次都共用</label>
+                            </div>
+                            <div class="input">
+                                <input type="radio" class="questionOptionNameRadio" name="questionOptionName_1133" id="question_81" value="1"/>
+                                <label for="question_81">从未共用</label>
+                            </div>
+                            <div class="input">
+                                <input type="radio" class="questionOptionNameRadio" name="questionOptionName_1133" id="question_82" value="2"/>
+                                <label for="question_82">有时共用</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="swiper-slide" id="swiper_33">
+                    <div class="scores">
+                        <h3>当前第34题，共34题</h3>
+                        <div class="f">
+                            <span class="cout">34</span>
+                            <span data-num="T01" class="questionName">本次调查是否采血</span>
+                        </div>
+                        <div class="choose ">
+                            <div class="input">
+                                <input type="radio" class="questionOptionNameRadio" name="questionOptionName_137" id="question_93" value="1"/>
+                                <label for="question_93">是</label>
+                            </div>
+                            <div class="input">
+                                <input type="radio" class="questionOptionNameRadio" name="questionOptionName_137" id="question_94" value="0"/>
+                                <label for="question_94">否</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="preNexts">
+                <div class="swiper-button-prev">
+                    <div class="pre"></div>
+                    上一题
+                </div>
+                <div class="swiper-button-next">
+                    <div class="next"></div>
+                    下一题
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<section class="toup" id="t3">
+    <div class="swipers">
+        <div class="con con1">
+            <div class="smile">
+                <p style="font-size: 0.4rem;text-align: center;color: red;">请将答卷编号提供给工作人员</p>
+                <p style="font-size: 0.4rem;text-align: center;">${answerNum}</p>
+                <p style="text-align: center;" id="qrcode"></p>
+                <p style="text-align: center;" id="againBtn"><a href="javascript:void(0)">重新测试</a></p>
+            </div>
+        </div>
+    </div>
+</section>
+<script src="${ctx}/static/front/swiper/swiper.min.js"></script>
+<script src="${ctx}/static/front/js/questionnaire.js"></script>
+<script type="text/javascript">
+    $(function () {
+        jQuery('#qrcode').qrcode('${answerNum}');
+
+        $("#againBtn").click(function () {
+            window.location.href = ctx + "/front/questionnaire?userId=" + userId + "&again=1";
+        });
+    })
+</script>
+</body>
+</html>
+

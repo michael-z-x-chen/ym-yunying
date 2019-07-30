@@ -1,0 +1,41 @@
+var commonFun = {
+    optionName: function (html) {
+        var inputs = $(html).find("input:radio[type=radio]:checked");
+        var id = inputs.attr("id");
+        var optionName = '';
+        var label = $(html).find("label");
+        for (var i = 0; i <= label.length; i++) {
+            var fors = $(label[i]).attr("for");
+            if (fors == id) {
+                optionName = $(label).html();
+                break;
+            }
+        }
+        return optionName;
+    },
+    questionName: function (html) {
+        var span = $(html).find(".questionName");
+        return span.html();
+    },
+    questionNum: function (html) {
+        var span = $(html).find(".questionName");
+        return span.attr("data-num");
+    },
+    isEmpty: function (val) {
+        if (val == '' || val == undefined || val == null || val.length == 0) {
+            return true;
+        }
+        return false;
+    },
+    required: function (val) {
+        if (commonFun.isEmpty(val)) {
+            layer.open({content: "该题目必须回答", skin: "msg", time: 2});
+            return true;
+        }
+        return false;
+    },
+    jumpToSwiper: function (jumpFrom, jumpTo) {
+        mySwiper.slideTo(jumpTo, 1000);
+        $("#swiper_" + jumpTo).attr("data-jump-from", jumpFrom);
+    }
+};

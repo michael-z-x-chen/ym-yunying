@@ -1,0 +1,133 @@
+$(function () {
+    $('#eq_startTime_div').datetimepicker({
+        format: 'yyyy-mm-dd hh:ii:ss',
+        autoclose: true,
+        minView: 0,
+        minuteStep: 1,
+        language: 'zh-CN'
+    });
+    $('#eq_endTime_div').datetimepicker({
+        format: 'yyyy-mm-dd hh:ii:ss',
+        autoclose: true,
+        minView: 0,
+        minuteStep: 1,
+        language: 'zh-CN'
+    });
+
+});
+var table;
+$(document).ready(function () {
+    table = $('#dataTables').DataTable({
+        "responsive": true,
+        "paginate": true,
+        "processing": true,
+        "serverSide": true,
+        "searching": false,
+        "ordering": false,
+        "pagingType": 'full_numbers',
+        "ajax": {
+            "url": ctx + '/api/answer/list',
+            "type": 'post',
+            "data": function (data) {
+                var startTime = $("#eq_startTime").val() == null || $("#eq_startTime").val() == "" ? "" : new Date($("#eq_startTime").val());
+                var endTime = $("#eq_endTime").val() == null || $("#eq_endTime").val() == "" ? "" : new Date($("#eq_endTime").val());
+                if (startTime != null && startTime != "") {
+                    data.startTime = startTime;
+                }
+                if (endTime != null && endTime != "") {
+                    data.endTime = endTime;
+                }
+                data.answerNum = $("#eq_answerNum").val();
+                data.checkNum = $("#eq_checkNum").val();
+                data.provinceName = $("#eq_provinceName").find("option:selected").text();
+                data.cityName = $("#eq_cityName").find("option:selected").text();
+                data.areaName = $("#eq_areaName").find("option:selected").text();
+                data.status = $("#eq_status").val();
+                data.hiv = $("#eq_hiv").val();
+                data.syphilis = $("#eq_syphilis").val();
+                data.hcv = $("#eq_hcv").val();
+                data.sentinelUnit = $("#eq_sentinelUnit").val();
+
+            }
+        },
+        "columnDefs": [{
+            "targets": [9],
+            "data": "download_link",
+            "render": function (data) {
+                var html = '<a class=" btn btn-sm blue btn-outline filter-cancel" href="javascript:answerQuestionFun(' + data.id + ')">回答记录</a>';
+                html += '<a class=" btn btn-sm blue btn-outline filter-cancel" href="javascript:deleteFun(' + data.id + ')">删除</a>';
+                if (data.status == 1) {
+                    html += '<a class=" btn btn-sm blue btn-outline filter-cancel" href="javascript:buluFun(' + data.id + ')">补录检测结果</a>';
+                }
+                return html;
+            }
+        }],
+        "columns": [
+            {"data": "address"},
+            {"data": "org.sentinelUnit"},
+            {"data": "answerNum"},
+            {"data": "checkNum"},
+            {
+                "data": "createTime", "render": function (data) {
+                    return (new Date(data)).Format("yyyy-MM-dd");
+                }
+            },
+            {"data": "hiv"},
+            {"data": "syphilis"},
+            {"data": "hcv"},
+            {
+                "data": "status", "render": function (data) {
+                    if (data == 1) {
+                        return "待补录"
+                    }
+                    if (data == 2) {
+                        return "答题中断"
+                    }
+                    if (data == 3) {
+                        return "完成"
+                    }
+                    return ' ';
+                }
+            },
+            {"data": null}
+        ],
+        "language": {
+            "url": ctx + '/static/plugins/datatables/language-chinese.json'
+        }
+    });
+});
+
+function search() {
+    var startTime = new Date($("#eq_startTime").val());
+    var endTime = new Date($("#eq_endTime").val());
+    if (startTime >= endTime) {
+        swal("", "结束时间要大于开始时间", "warning");
+        return;
+    }
+    table.ajax.reload();
+}
+
+function answerQuestionFun(id) {
+    window.location.href = ctx + "/answerQuestion/list?answerId=" + id;
+}
+
+function deleteFun(id) {
+    commonFn.deleteData(id, ctx + "/api/answer/delete", table);
+}
+
+function excelFun() {
+    window.location.href = ctx + "/api/answer/excelAnswer";
+}
+
+$(function () {
+    'use strict';
+    $('#distpicker').distpicker();
+});
+
+function buluFun(id) {
+    window.location.href = ctx + "/answer/bulu?id=" + id;
+}
+
+
+
+

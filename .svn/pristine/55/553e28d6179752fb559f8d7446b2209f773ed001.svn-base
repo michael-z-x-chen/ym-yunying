@@ -1,0 +1,31 @@
+var commonPostFn = {
+    question_1: function (val, question6Val, html) {
+        var inputs = $(html).find("input:radio[type=radio]:checked");
+        var val = inputs.val();
+        var question6Val = $("#question_6").val();
+        var optionName = commonFun.optionName(html);
+        var questionName = commonFun.questionName(html);
+        var questionNum = commonFun.questionNum(html);
+        if (val == 5) {
+            postData(questionNum, questionName, question6Val, optionName, val, 1);
+        } else {
+            postData(questionNum, questionName, "", optionName, val, 1);
+        }
+    },
+    questionRadio: function (val, html) {
+        var questionNum = commonFun.questionNum(html);
+        var questionName = commonFun.questionName(html);
+        var optionName = commonFun.optionName(html);
+        postData(questionNum, questionName, "", optionName, val, 1);
+    },
+    questionText: function (val, html) {
+        var questionNum = commonFun.questionNum(html);
+        var questionName = commonFun.questionName(html);
+        postData(questionNum, questionName, val, "", "", 2);
+    },
+    questionSelect: function (val, html) {
+        var questionNum = commonFun.questionNum(html);
+        var questionName = commonFun.questionName(html);
+        postData(questionNum, questionName, val, "", "", 3);
+    },
+};

@@ -1,0 +1,1379 @@
+var mySwiper = new Swiper(".swiper-container", {
+    pagination: ".swiper-pagination",
+    loop: false
+});
+
+var time = new Date();
+var day = ("0" + time.getDate()).slice(-2);
+var month = ("0" + (time.getMonth() + 1)).slice(-2);
+var today = time.getFullYear() + "-" + month + "-" + day;
+
+var question33 = null;
+var question32 = null;
+var question31 = null;
+var question27 = null;
+var question24 = null;
+var question22 = null;
+var question19 = null;
+
+var maritalStatus = null;
+var question19Val = null;
+var question26Val = null;
+var gender = null;
+var question28Val = null;
+
+if (commonFun.isEmpty(finish) || finish == '0') {
+    $("#t1,#t2,#t3").hide();
+} else {
+    $("#t0,#t1,#t2").hide();
+}
+$("#question_6").hide();
+$("#showCitys").hide();
+$("#showCountys").hide();
+
+$("a.dateSubmit").on("click", function () {
+    var activeIndex = mySwiper.activeIndex;
+    var html = mySwiper.slides[activeIndex];
+    var date0 = $(".date").val();
+    if (!date0) {
+        layer.open({content: "该题目必须回答", skin: "msg", time: 2});
+        return;
+    } else {
+        $("#t0").hide();
+        $("#t1").show();
+    }
+});
+$("a.jion").on("click", function () {
+    $("#t1").hide();
+    $("#t2").show();
+    $.ajax({
+        type: "POST",
+        url: ctx + "/api/front/answer"
+    });
+});
+
+$(document).ready(function () {
+    $(".date").val(today);
+});
+
+$(".date").change(function () {
+    var val = $(this).val();
+    if (val < today) {
+        layer.open({content: "不可以小于当前时间", skin: "msg", time: 2});
+        $(".date").val(today);
+        return;
+    }
+});
+
+$("#countrys").change(function () {
+    var val = this.value;
+    if ("中国" == val) {
+        $("#provinceDiv").show();
+        $("#cityDiv").show();
+        $("#areaDiv").show();
+    } else {
+        $("#provinceDiv").hide();
+        $("#cityDiv").hide();
+        $("#areaDiv").hide();
+    }
+});
+
+$(".questionNameText").blur(function () {
+    var val = $(this).val();
+    if (val == null || val == "") {
+        layer.open({content: "该题目为必填项", skin: "msg", time: 2});
+        return;
+    }
+    if (!isNum(val)) {
+        $(this).addClass("error");
+        layer.open({content: "请输入正确数字", skin: "msg", time: 2});
+        return;
+    }
+    var min = $(this).attr("data-min");
+    var max = $(this).attr("data-max");
+    if (min != null && min != "") {
+        if (parseFloat(val) < parseFloat(min)) {
+            $(this).addClass("error");
+            layer.open({content: "最小值" + min, skin: "msg", time: 2});
+            return;
+        }
+    }
+    if (max != null && max != "") {
+        if (parseFloat(val) > parseFloat(max)) {
+            $(this).addClass("error");
+            layer.open({content: "最大值" + max, skin: "msg", time: 2});
+            return;
+        }
+    }
+});
+
+var dateTime = new Date().getFullYear();
+var birthdayDate = null;
+$("input[type=text][name=questionOptionName_4]").change(function () {
+    birthdayDate = this.value;
+});
+
+$(".questionOptionNameRadio").change(function () {
+    var activeIndex = mySwiper.activeIndex;
+    var html = mySwiper.slides[activeIndex];
+
+    //第一题  A06
+    if (activeIndex == 0) {
+        var inputs = $(html).find("input:radio[type=radio]:checked");
+        var val = inputs.val();
+        var question6Val = $("#question_6").val();
+        if (val == null || val == "" || (val == 5 && !question6Val)) {
+            return;
+        }
+        commonPostFn.question_1(val, question6Val, html);
+        mySwiper.slideTo(1, 1000);
+    }
+
+    //第二题 性别
+    if (activeIndex == 1) {
+        var inputs = $(html).find("input:radio[type=radio]:checked");
+        var val = inputs.val();
+        gender = val;
+        if (commonFun.required(val)) {
+            return;
+        }
+        commonPostFn.questionRadio(val, html);
+        mySwiper.slideTo(2, 1000);
+    }
+    //第三题 出生年
+    if (activeIndex == 2) {
+        var inputs = $(html).find("input[type=text]");
+        var val = inputs.val();
+        if (!isNum(val)) {
+            inputs.addClass("error");
+            layer.open({content: "请输入正确数字", skin: "msg", time: 2});
+            return;
+        }
+        var min = inputs.attr("data-min");
+        var max = inputs.attr("data-max");
+
+        if (min != null && min != "") {
+            if (parseFloat(val) < parseFloat(min)) {
+                inputs.addClass("error");
+                layer.open({content: "最小值" + min, skin: "msg", time: 2});
+                return;
+            }
+        }
+        if (max != null && max != "") {
+            if (parseFloat(val) > parseFloat(max)) {
+                inputs.addClass("error");
+                layer.open({content: "最大值" + max, skin: "msg", time: 2});
+                return;
+            }
+        }
+        if (val == null || val == "") {
+            layer.open({content: "该题目必须回答", skin: "msg", time: 2});
+            return;
+        }
+        commonPostFn.questionText(val, html);
+        mySwiper.slideTo(3, 1000);
+    }
+    //第五题  婚姻状况
+    if (activeIndex == 3) {
+        var inputs = $(html).find("input:radio[type=radio]:checked");
+        var val = inputs.val();
+        maritalStatus = val;
+        if (val == null || val == "") {
+            layer.open({content: "该题目必须回答", skin: "msg", time: 2});
+            return;
+        }
+        commonPostFn.questionRadio(val, html);
+        mySwiper.slideTo(4, 1000);
+    }
+
+    //第六题  B04
+    var provinceVal = $("#province").val();
+    var citysVal = $("#citys").val();
+    var areaVal = $("#area").val();
+    var countrysVal = $("#countrys").val();
+    if (activeIndex == 4) {
+        if (commonFun.required(countrysVal)) {
+            return;
+        }
+        postData("B04", "国籍", countrysVal, "", "", 3);
+        if ("中国" == countrysVal) {
+            if (!provinceVal || !citysVal || !areaVal) {
+                layer.open({content: "该题目必须回答", skin: "msg", time: 2});
+                return;
+            }
+            postData("B04a", "户籍所在省份", provinceVal, "", "", 3);
+            postData("B04b", "户籍所在城市", citysVal, "", "", 3);
+            postData("B04c", "户籍所在区县", areaVal, "", "", 3);
+
+            mySwiper.slideTo(5, 1000);
+        } else {
+            commonFun.jumpToSwiper(4, 6);
+        }
+    }
+    //第七题 民族
+    if (activeIndex == 5) {
+        var nation = $("#nation").val();
+        if (nation == null || nation == "") {
+            layer.open({content: "该题目必须回答", skin: "msg", time: 2});
+            return;
+        }
+        commonPostFn.questionSelect(nation, html);
+        mySwiper.slideTo(6, 1000);
+    }
+    //第八题  本地居住时间
+    if (activeIndex == 6) {
+        var inputs = $(html).find("input:radio[type=radio]:checked");
+        var val = inputs.val();
+        if (val == null || val == "") {
+            layer.open({content: "该题目必须回答", skin: "msg", time: 2});
+            return;
+        }
+        commonPostFn.questionRadio(val, html);
+        mySwiper.slideTo(7, 1000);
+    }
+    //第九题  文化程度
+    if (activeIndex == 7) {
+        var inputs = $(html).find("input:radio[type=radio]:checked");
+        var val = inputs.val();
+        if (val == null || val == "") {
+            layer.open({content: "该题目必须回答", skin: "msg", time: 2});
+            return;
+        }
+        commonPostFn.questionRadio(val, html);
+        mySwiper.slideTo(8, 1000);
+    }
+
+    //第十题  外表识别感染者
+    if (activeIndex == 8) {
+        var inputs = $(html).find("input:radio[type=radio]:checked");
+        var val = inputs.val();
+        if (val == null || val == "") {
+            layer.open({content: "该题目必须回答", skin: "msg", time: 2});
+            return;
+        }
+        commonPostFn.questionRadio(val, html);
+        mySwiper.slideTo(9, 1000);
+    }
+    //第十一题  蚊虫叮咬
+    if (activeIndex == 9) {
+        var inputs = $(html).find("input:radio[type=radio]:checked");
+        var val = inputs.val();
+        if (val == null || val == "") {
+            layer.open({content: "该题目必须回答", skin: "msg", time: 2});
+            return;
+        }
+        commonPostFn.questionRadio(val, html);
+        mySwiper.slideTo(10, 1000);
+    }
+    //第十二题  一起吃饭
+    if (activeIndex == 10) {
+        var inputs = $(html).find("input:radio[type=radio]:checked");
+        var val = inputs.val();
+        if (val == null || val == "") {
+            layer.open({content: "该题目必须回答", skin: "msg", time: 2});
+            return;
+        }
+        commonPostFn.questionRadio(val, html);
+        mySwiper.slideTo(11, 1000);
+    }
+    //第十三题  血或血液制品
+    if (activeIndex == 11) {
+        var inputs = $(html).find("input:radio[type=radio]:checked");
+        var val = inputs.val();
+        if (val == null || val == "") {
+            layer.open({content: "该题目必须回答", skin: "msg", time: 2});
+            return;
+        }
+        commonPostFn.questionRadio(val, html);
+        mySwiper.slideTo(12, 1000);
+    }
+    //第十四题  共用针具
+    if (activeIndex == 12) {
+        var inputs = $(html).find("input:radio[type=radio]:checked");
+        var val = inputs.val();
+        if (val == null || val == "") {
+            layer.open({content: "该题目必须回答", skin: "msg", time: 2});
+            return;
+        }
+        commonPostFn.questionRadio(val, html);
+        mySwiper.slideTo(13, 1000);
+    }
+    //第十五题  母婴传播
+    if (activeIndex == 13) {
+        var inputs = $(html).find("input:radio[type=radio]:checked");
+        var val = inputs.val();
+        if (val == null || val == "") {
+            layer.open({content: "该题目必须回答", skin: "msg", time: 2});
+            return;
+        }
+        commonPostFn.questionRadio(val, html);
+        mySwiper.slideTo(14, 1000);
+    }
+    //第十六题  安全套
+    if (activeIndex == 14) {
+        var inputs = $(html).find("input:radio[type=radio]:checked");
+        var val = inputs.val();
+        if (val == null || val == "") {
+            layer.open({content: "该题目必须回答", skin: "msg", time: 2});
+            return;
+        }
+        commonPostFn.questionRadio(val, html);
+        mySwiper.slideTo(15, 1000);
+    }
+    //第十七题  一个未感染性伴
+    if (activeIndex == 15) {
+        var inputs = $(html).find("input:radio[type=radio]:checked");
+        var val = inputs.val();
+        if (val == null || val == "") {
+            layer.open({content: "该题目必须回答", skin: "msg", time: 2});
+            return;
+        }
+        commonPostFn.questionRadio(val, html);
+        mySwiper.slideTo(16, 1000);
+    }
+    //第十九题  是否有过性行为经历
+    if (activeIndex == 16) {
+        var inputs = $(html).find("input:radio[type=radio]:checked");
+        var val = inputs.val();
+        if (val == 0) {
+            commonPostFn.questionRadio(val, html);
+            commonFun.jumpToSwiper(16, 29);
+        } else if (val == 1 && (maritalStatus == 1 || maritalStatus == 4) && gender == 1) {
+            commonPostFn.questionRadio(val, html);
+            commonFun.jumpToSwiper(16, 19);
+        } else if (val == 1 && (maritalStatus == 1 || maritalStatus == 4) && gender == 2) {
+            commonPostFn.questionRadio(val, html);
+            commonFun.jumpToSwiper(16, 22);
+        } else if (val == 1 && (maritalStatus == 2 || maritalStatus == 3)) {
+            commonPostFn.questionRadio(val, html);
+            mySwiper.slideTo(17, 1000);
+        } else if (val == null || val == "") {
+            layer.open({content: "该题目必须回答", skin: "msg", time: 2});
+            return;
+        }
+    }
+    //第二十题  最近一年与配偶或同居者发生性行为安全套使用频率
+    if (maritalStatus == 1 || maritalStatus == 4) {
+        $("#question_66").attr("disabled", true);
+        $("#question_67").attr("disabled", true);
+        $("#question_68").attr("disabled", true);
+    } else {
+        $("#question_66").attr("disabled", false);
+        $("#question_67").attr("disabled", false);
+        $("#question_68").attr("disabled", false);
+    }
+    if (activeIndex == 17) {
+        var inputs = $(html).find("input:radio[type=radio]:checked");
+        var val = inputs.val();
+        question19Val = val;
+        var question66_disabled = $("#question_66").is(":disabled");
+        if (question66_disabled) {
+            mySwiper.slideTo(18, 1000);
+        } else {
+            if (val == null || val == "") {
+                layer.open({content: "该题目必须回答", skin: "msg", time: 2});
+                return;
+            }
+            commonPostFn.questionRadio(val, html);
+            mySwiper.slideTo(18, 1000);
+        }
+    }
+
+    //第二十一题 最近一次与配偶或同居者发生性行为使用安全套
+    if (activeIndex == 18) {
+        var inputs = $(html).find("input:radio[type=radio]:checked");
+        var val = inputs.val();
+        var question66_disabled = $("#question_66").is(":disabled");
+        if (question66_disabled) {
+            mySwiper.slideTo(19, 1000);
+        }
+        if ((question19Val == 1 && val == 1) || (question19Val == 3 && val == 0)) {
+            layer.open({content: "使用安全套行为前后矛盾，请核查！", skin: "msg", time: 2});
+            return;
+        } else {
+            if (val == null || val == "") {
+                layer.open({content: "该题目必须回答", skin: "msg", time: 2});
+                return;
+            } else if (gender == 2 && val) {
+                commonPostFn.questionRadio(val, html);
+                commonFun.jumpToSwiper(18, 22);
+            } else if (gender == 1 && val) {
+                commonPostFn.questionRadio(val, html);
+                mySwiper.slideTo(19, 1000);
+            }
+        }
+    }
+
+    //第二十二题 最近一年与小姐发生过性行为
+    if (gender != 1) {
+        $("#question_89").attr("disabled", true);
+        $("#question_90").attr("disabled", true);
+        $("#question_63").attr("disabled", true);
+        $("#question_64").attr("disabled", true);
+        $("#question_65").attr("disabled", true);
+        $("#question_76").attr("disabled", true);
+        $("#question_77").attr("disabled", true);
+    } else {
+        $("#question_89").attr("disabled", false);
+        $("#question_90").attr("disabled", false);
+        $("#question_63").attr("disabled", false);
+        $("#question_64").attr("disabled", false);
+        $("#question_65").attr("disabled", false);
+        $("#question_76").attr("disabled", false);
+        $("#question_77").attr("disabled", false);
+    }
+    if (activeIndex == 19) {
+        var inputs = $(html).find("input:radio[type=radio]:checked");
+        var val = inputs.val();
+        var question90_disabled = $("#question_90").is(":disabled");
+        if (question90_disabled) {
+            mySwiper.slideTo(20, 1000);
+        } else if (val == 0) {
+            commonPostFn.questionRadio(val, html);
+            commonFun.jumpToSwiper(19, 22);
+        } else {
+            if (val == null || val == "") {
+                layer.open({content: "该题目必须回答", skin: "msg", time: 2});
+                return;
+            }
+            commonPostFn.questionRadio(val, html);
+            mySwiper.slideTo(20, 1000);
+        }
+    }
+    //第二十三题 最近一年与小姐发生性行为安全套使用频率
+    if (activeIndex == 20) {
+        var inputs = $(html).find("input:radio[type=radio]:checked");
+        var val = inputs.val();
+        var question65_disabled = $("#question_65").is(":disabled");
+        if (question65_disabled) {
+            mySwiper.slideTo(21, 1000);
+        } else if (val == null || val == "") {
+            layer.open({content: "该题目必须回答", skin: "msg", time: 2});
+            return;
+        } else {
+            commonPostFn.questionRadio(val, html);
+        }
+        mySwiper.slideTo(21, 1000);
+    }
+
+    //第二十四题 最近一次与小姐发生性行为使用安全套
+    if (activeIndex == 21) {
+        var inputs = $(html).find("input:radio[type=radio]:checked");
+        var val = inputs.val();
+        var question77_disabled = $("#question_77").is(":disabled");
+        if (question77_disabled) {
+            mySwiper.slideTo(22, 1000);
+        } else if (val == null || val == "") {
+            layer.open({content: "该题目必须回答", skin: "msg", time: 2});
+            return;
+        } else {
+            commonPostFn.questionRadio(val, html);
+        }
+        mySwiper.slideTo(22, 1000);
+    }
+
+    //第二十五题 最近一年与临时性伴发生过性行为
+    if (activeIndex == 22) {
+        var inputs = $(html).find("input:radio[type=radio]:checked");
+        var val = inputs.val();
+        if (val == 0) {
+            if (gender == 2) {
+                commonFun.jumpToSwiper(22, 29);
+            } else {
+                commonFun.jumpToSwiper(22, 25);
+            }
+        } else {
+            if (val == null || val == "") {
+                layer.open({content: "该题目必须回答", skin: "msg", time: 2});
+                return;
+            }
+            commonPostFn.questionRadio(val, html);
+            mySwiper.slideTo(23, 1000);
+        }
+    }
+
+    //第二十六题 最近一年与临时性伴发生性行为安全套使用频率
+    if (activeIndex == 23) {
+        var inputs = $(html).find("input:radio[type=radio]:checked");
+        var val = inputs.val();
+        question26Val = val;
+        if (val == null || val == "") {
+            layer.open({content: "该题目必须回答", skin: "msg", time: 2});
+            return;
+        }
+        commonPostFn.questionRadio(val, html);
+        mySwiper.slideTo(24, 1000);
+    }
+
+    //第二十七题 最近一次与临时性伴发生性行为使用安全套
+    if (activeIndex == 24) {
+        var inputs = $(html).find("input:radio[type=radio]:checked");
+        var val = inputs.val();
+        if ((question26Val == 1 && val == 1) || (question26Val == 3 && val == 0)) {
+            layer.open({content: "使用安全套行为前后矛盾，请核查！", skin: "msg", time: 2});
+            return;
+        } else {
+            if (val == null || val == "") {
+                layer.open({content: "该题目必须回答", skin: "msg", time: 2});
+                return;
+            } else if (gender == 2 && val) {
+                commonPostFn.questionRadio(val, html);
+                commonFun.jumpToSwiper(24, 29);
+            } else {
+                mySwiper.slideTo(25, 1000);
+            }
+        }
+    }
+
+    //第二十八题 最近一年是否有同性性行为
+    if (gender != 1) {
+        $("#question_85").attr("disabled", true);
+        $("#question_86").attr("disabled", true);
+    } else {
+        $("#question_85").attr("disabled", false);
+        $("#question_86").attr("disabled", false);
+    }
+    if (activeIndex == 25) {
+        var inputs = $(html).find("input:radio[type=radio]:checked");
+        var val = inputs.val();
+        var question85_disabled = $("#question_85").is(":disabled");
+        if (question85_disabled) {
+            mySwiper.slideTo(26, 1000);
+        }
+        if (val == 0) {
+            commonPostFn.questionRadio(val, html);
+            commonFun.jumpToSwiper(25, 29);
+        } else {
+            if (val == null || val == "") {
+                layer.open({content: "该题目必须回答", skin: "msg", time: 2});
+                return;
+            }
+            commonPostFn.questionRadio(val, html);
+            mySwiper.slideTo(26, 1000);
+        }
+    }
+
+    //第二十九题 最近一年是否有同性商业性行为
+    if (activeIndex == 26) {
+        var inputs = $(html).find("input:radio[type=radio]:checked");
+        var val = inputs.val();
+        if (val == null || val == "") {
+            layer.open({content: "该题目必须回答", skin: "msg", time: 2});
+            return;
+        }
+        commonPostFn.questionRadio(val, html);
+        mySwiper.slideTo(27, 1000);
+    }
+
+    //第三十题 最近一年同性肛交安全套使用频率
+    if (activeIndex == 27) {
+        var inputs = $(html).find("input:radio[type=radio]:checked");
+        var val = inputs.val();
+        question28Val = val;
+        if (val == null || val == "") {
+            layer.open({content: "该题目必须回答", skin: "msg", time: 2});
+            return;
+        }
+        commonPostFn.questionRadio(val, html);
+        mySwiper.slideTo(28, 1000);
+    }
+
+    //第三十一题 最近一次同性肛交使用安全套
+    if (activeIndex == 28) {
+        var inputs = $(html).find("input:radio[type=radio]:checked");
+        var val = inputs.val();
+        if ((question28Val == 1 && val == 1) || (question28Val == 3 && val == 0)) {
+            layer.open({
+                content: "使用安全套行为前后矛盾，请核查！",
+                skin: "msg",
+                time: 2
+            });
+            return;
+        } else {
+            if (val == null || val == "") {
+                layer.open({content: "该题目必须回答", skin: "msg", time: 2});
+                return;
+            }
+            commonPostFn.questionRadio(val, html);
+            mySwiper.slideTo(29, 1000);
+        }
+    }
+
+    //第三十二题 是否吸毒
+    if (activeIndex == 29) {
+        var inputs = $(html).find("input:radio[type=radio]:checked");
+        var val = inputs.val();
+        if (val == 0) {
+            commonPostFn.questionRadio(val, html);
+            commonFun.jumpToSwiper(29, 33);
+        } else {
+            if (val == null || val == "") {
+                layer.open({content: "该题目必须回答", skin: "msg", time: 2});
+                return;
+            }
+            commonPostFn.questionRadio(val, html);
+            mySwiper.slideTo(30, 1000);
+        }
+    }
+
+    //第三十三题 注射过毒品
+    if (activeIndex == 30) {
+        var inputs = $(html).find("input:radio[type=radio]:checked");
+        var val = inputs.val();
+        if (val == 0) {
+            commonPostFn.questionRadio(val, html);
+            commonFun.jumpToSwiper(30, 33);
+        } else {
+            if (val == null || val == "") {
+                layer.open({content: "该题目必须回答", skin: "msg", time: 2});
+                return;
+            }
+            commonPostFn.questionRadio(val, html);
+            mySwiper.slideTo(31, 1000);
+        }
+    }
+
+    //第三十四题 共用过针具
+    if (activeIndex == 31) {
+        var inputs = $(html).find("input:radio[type=radio]:checked");
+        var val = inputs.val();
+        if (val == 0) {
+            commonPostFn.questionRadio(val, html);
+            commonFun.jumpToSwiper(31, 33);
+        } else {
+            if (val == null || val == "") {
+                layer.open({content: "该题目必须回答", skin: "msg", time: 2});
+                return;
+            }
+            commonPostFn.questionRadio(val, html);
+            mySwiper.slideTo(32, 1000);
+        }
+    }
+
+    //第三十五题 最近六个月共用针具的频率
+    if (activeIndex == 32) {
+        var inputs = $(html).find("input:radio[type=radio]:checked");
+        var val = inputs.val();
+        if (val == null || val == "") {
+            layer.open({content: "该题目必须回答", skin: "msg", time: 2});
+            return;
+        }
+        commonPostFn.questionRadio(val, html);
+        mySwiper.slideTo(33, 1000);
+    }
+
+    //第三十六题 采血
+    if (activeIndex == 33) {
+        var inputs = $(html).find("input:radio[type=radio]:checked");
+        var val = inputs.val();
+        if (val == null || val == "") {
+            layer.open({content: "该题目必须回答", skin: "msg", time: 2});
+            return;
+        }
+        commonPostFn.questionRadio(val, html);
+        $.ajax({
+            type: "POST",
+            url: ctx + "/api/front/updateStatus"
+        });
+        $("#t2").hide();
+        $("#t3").show();
+    }
+});
+
+$(".questionNameText").focus(function () {
+    $(this).removeClass("error");
+});
+
+function isNum(value) {
+    var g = /^\d+$/;
+    return g.test(value);
+}
+
+function birthday(val) {
+    var a = /^((1920)|(200[0-9]))-[1-12]-[1-31]$/; //1920-2009
+    return a.test(val);
+}
+
+function age(val) {
+    var a = /^(1[3-9])|([2-9]\d)$/;
+    return a.test(val);
+}
+
+$("input[type=radio][name=questionOptionName_1]").change(function () {
+    if (this.value == "5") {
+        $("#question_6").show();
+    } else {
+        $("#question_6").val("");
+        $("#question_6").hide();
+    }
+});
+
+//下一步
+$(".swiper-button-next").click(function () {
+    if (mySwiper.isEnd) {
+        $("#t2").hide();
+        $("#t3").show();
+        $.ajax({
+            type: "POST",
+            url: ctx + "/api/front/updateStatus"
+        });
+    } else {
+        var activeIndex = mySwiper.activeIndex;
+        var html = mySwiper.slides[activeIndex];
+        var age = dateTime - birthdayDate;
+        $("#question_10").val(age);
+
+        //第一题  A06
+        if (activeIndex == 0) {
+            var inputs = $(html).find("input:radio[type=radio]:checked");
+            var val = inputs.val();
+            var question6Val = $("#question_6").val();
+            if (val == null || val == "" || (val == 5 && !question6Val)) {
+                layer.open({content: "该题目必须回答", skin: "msg", time: 2});
+                return;
+            }
+            commonPostFn.question_1(val, question6Val, html);
+            mySwiper.slideTo(1, 1000);
+        }
+        //第二题 性别
+        if (activeIndex == 1) {
+            var inputs = $(html).find("input:radio[type=radio]:checked");
+            var val = inputs.val();
+            gender = val;
+            if (commonFun.required(val)) {
+                return;
+            }
+            commonPostFn.questionRadio(val, html);
+            mySwiper.slideTo(2, 1000);
+        }
+        //第三题 出生年
+        if (activeIndex == 2) {
+            var inputs = $(html).find("input[type=text]");
+            var val = inputs.val();
+            if (!isNum(val)) {
+                inputs.addClass("error");
+                layer.open({content: "请输入正确数字", skin: "msg", time: 2});
+                return;
+            }
+            var min = inputs.attr("data-min");
+            var max = inputs.attr("data-max");
+
+            if (min != null && min != "") {
+                if (parseFloat(val) < parseFloat(min)) {
+                    inputs.addClass("error");
+                    layer.open({content: "最小值" + min, skin: "msg", time: 2});
+                    return;
+                }
+            }
+            if (max != null && max != "") {
+                if (parseFloat(val) > parseFloat(max)) {
+                    inputs.addClass("error");
+                    layer.open({content: "最大值" + max, skin: "msg", time: 2});
+                    return;
+                }
+            }
+            if (val == null || val == "") {
+                layer.open({content: "该题目必须回答", skin: "msg", time: 2});
+                return;
+            }
+            commonPostFn.questionText(val, html);
+            mySwiper.slideTo(3, 1000);
+        }
+        //第五题  婚姻状况
+        if (activeIndex == 3) {
+            var inputs = $(html).find("input:radio[type=radio]:checked");
+            var val = inputs.val();
+            maritalStatus = val;
+            if (val == null || val == "") {
+                layer.open({content: "该题目必须回答", skin: "msg", time: 2});
+                return;
+            }
+            commonPostFn.questionRadio(val, html);
+            mySwiper.slideTo(4, 1000);
+        }
+
+        //第六题  B04
+        var provinceVal = $("#province").val();
+        var citysVal = $("#citys").val();
+        var areaVal = $("#area").val();
+        var countrysVal = $("#countrys").val();
+        if (activeIndex == 4) {
+            if (commonFun.required(countrysVal)) {
+                return;
+            }
+            if ("中国" == countrysVal) {
+                postData("B04", "国籍", countrysVal, "", "", 3);
+                if (!provinceVal || !citysVal || !areaVal) {
+                    layer.open({content: "该题目必须回答", skin: "msg", time: 2});
+                    return;
+                }
+                postData("B04a", "户籍所在省份", provinceVal, "", "", 3);
+                postData("B04b", "户籍所在城市", citysVal, "", "", 3);
+                postData("B04c", "户籍所在区县", areaVal, "", "", 3);
+
+                mySwiper.slideTo(5, 1000);
+            } else {
+                commonFun.jumpToSwiper(4, 6);
+            }
+        }
+
+        //第七题 民族
+        if (activeIndex == 5) {
+            var nation = $("#nation").val();
+            if (nation == null || nation == "") {
+                layer.open({content: "该题目必须回答", skin: "msg", time: 2});
+                return;
+            }
+            commonPostFn.questionSelect(nation, html);
+            mySwiper.slideTo(6, 1000);
+        }
+        //第八题  本地居住时间
+        if (activeIndex == 6) {
+            var inputs = $(html).find("input:radio[type=radio]:checked");
+            var val = inputs.val();
+            if (val == null || val == "") {
+                layer.open({content: "该题目必须回答", skin: "msg", time: 2});
+                return;
+            }
+            commonPostFn.questionRadio(val, html);
+            mySwiper.slideTo(7, 1000);
+        }
+        //第九题  文化程度
+        if (activeIndex == 7) {
+            var inputs = $(html).find("input:radio[type=radio]:checked");
+            var val = inputs.val();
+            if (val == null || val == "") {
+                layer.open({content: "该题目必须回答", skin: "msg", time: 2});
+                return;
+            }
+            commonPostFn.questionRadio(val, html);
+            mySwiper.slideTo(8, 1000);
+        }
+
+        //第十题  外表识别感染者
+        if (activeIndex == 8) {
+            var inputs = $(html).find("input:radio[type=radio]:checked");
+            var val = inputs.val();
+            if (val == null || val == "") {
+                layer.open({content: "该题目必须回答", skin: "msg", time: 2});
+                return;
+            }
+            commonPostFn.questionRadio(val, html);
+            mySwiper.slideTo(9, 1000);
+        }
+        //第十一题  蚊虫叮咬
+        if (activeIndex == 9) {
+            var inputs = $(html).find("input:radio[type=radio]:checked");
+            var val = inputs.val();
+            if (val == null || val == "") {
+                layer.open({content: "该题目必须回答", skin: "msg", time: 2});
+                return;
+            }
+            commonPostFn.questionRadio(val, html);
+            mySwiper.slideTo(10, 1000);
+        }
+        //第十二题  一起吃饭
+        if (activeIndex == 10) {
+            var inputs = $(html).find("input:radio[type=radio]:checked");
+            var val = inputs.val();
+            if (val == null || val == "") {
+                layer.open({content: "该题目必须回答", skin: "msg", time: 2});
+                return;
+            }
+            commonPostFn.questionRadio(val, html);
+            mySwiper.slideTo(11, 1000);
+        }
+        //第十三题  血或血液制品
+        if (activeIndex == 11) {
+            var inputs = $(html).find("input:radio[type=radio]:checked");
+            var val = inputs.val();
+            if (val == null || val == "") {
+                layer.open({content: "该题目必须回答", skin: "msg", time: 2});
+                return;
+            }
+            commonPostFn.questionRadio(val, html);
+            mySwiper.slideTo(12, 1000);
+        }
+        //第十四题  共用针具
+        if (activeIndex == 12) {
+            var inputs = $(html).find("input:radio[type=radio]:checked");
+            var val = inputs.val();
+            if (val == null || val == "") {
+                layer.open({content: "该题目必须回答", skin: "msg", time: 2});
+                return;
+            }
+            commonPostFn.questionRadio(val, html);
+            mySwiper.slideTo(13, 1000);
+        }
+        //第十五题  母婴传播
+        if (activeIndex == 13) {
+            var inputs = $(html).find("input:radio[type=radio]:checked");
+            var val = inputs.val();
+            if (val == null || val == "") {
+                layer.open({content: "该题目必须回答", skin: "msg", time: 2});
+                return;
+            }
+            commonPostFn.questionRadio(val, html);
+            mySwiper.slideTo(14, 1000);
+        }
+        //第十六题  安全套
+        if (activeIndex == 14) {
+            var inputs = $(html).find("input:radio[type=radio]:checked");
+            var val = inputs.val();
+            if (val == null || val == "") {
+                layer.open({content: "该题目必须回答", skin: "msg", time: 2});
+                return;
+            }
+            commonPostFn.questionRadio(val, html);
+            mySwiper.slideTo(15, 1000);
+        }
+        //第十七题  一个未感染性伴
+        if (activeIndex == 15) {
+            var inputs = $(html).find("input:radio[type=radio]:checked");
+            var val = inputs.val();
+            if (val == null || val == "") {
+                layer.open({content: "该题目必须回答", skin: "msg", time: 2});
+                return;
+            }
+            commonPostFn.questionRadio(val, html);
+            mySwiper.slideTo(16, 1000);
+        }
+        //第十九题  是否有过性行为经历
+        if (activeIndex == 16) {
+            var inputs = $(html).find("input:radio[type=radio]:checked");
+            var val = inputs.val();
+            if (val == 0) {
+                commonPostFn.questionRadio(val, html);
+                commonFun.jumpToSwiper(16, 29);
+            }
+            if (val == 1 && (maritalStatus == 1 || maritalStatus == 4)) {
+                commonPostFn.questionRadio(val, html);
+                commonFun.jumpToSwiper(16, 19);
+            }
+            if (val == 1 && (maritalStatus == 2 || maritalStatus == 3)) {
+                commonPostFn.questionRadio(val, html);
+                mySwiper.slideTo(17, 1000);
+            }
+            if (val == null || val == "") {
+                layer.open({content: "该题目必须回答", skin: "msg", time: 2});
+                return;
+            }
+        }
+        //第二十题  最近一年与配偶或同居者发生性行为安全套使用频率
+        if (maritalStatus == 1 || maritalStatus == 4) {
+            $("#question_66").attr("disabled", true);
+            $("#question_67").attr("disabled", true);
+            $("#question_68").attr("disabled", true);
+        } else {
+            $("#question_66").attr("disabled", false);
+            $("#question_67").attr("disabled", false);
+            $("#question_68").attr("disabled", false);
+        }
+        if (activeIndex == 17) {
+            var inputs = $(html).find("input:radio[type=radio]:checked");
+            var val = inputs.val();
+            question19Val = val;
+            var question66_disabled = $("#question_66").is(":disabled");
+            if (question66_disabled) {
+                mySwiper.slideTo(18, 1000);
+            } else {
+                if (val == null || val == "") {
+                    layer.open({content: "该题目必须回答", skin: "msg", time: 2});
+                    return;
+                }
+                commonPostFn.questionRadio(val, html);
+                mySwiper.slideTo(18, 1000);
+            }
+        }
+
+        //第二十一题 最近一次与配偶或同居者发生性行为使用安全套
+        if (activeIndex == 18) {
+            var inputs = $(html).find("input:radio[type=radio]:checked");
+            var val = inputs.val();
+            var question66_disabled = $("#question_66").is(":disabled");
+            if (question66_disabled) {
+                commonFun.jumpToSwiper(18, 21);
+            } else if (
+                (question19Val == 1 && val == 1) ||
+                (question19Val == 3 && val == 0)
+            ) {
+                layer.open({content: "使用安全套行为前后矛盾，请核查！", skin: "msg", time: 2});
+                return;
+            } else {
+                if (val == null || val == "") {
+                    layer.open({content: "该题目必须回答", skin: "msg", time: 2});
+                    return;
+                } else if (gender == 2 && val) {
+                    commonPostFn.questionRadio(val, html);
+                    commonFun.jumpToSwiper(18, 22);
+                } else if (gender == 1 && val) {
+                    commonPostFn.questionRadio(val, html);
+                    mySwiper.slideTo(19, 1000);
+                }
+            }
+        }
+
+        //第二十二题 最近一年与小姐发生过性行为
+        if (gender != 1) {
+            $("#question_89").attr("disabled", true);
+            $("#question_90").attr("disabled", true);
+            $("#question_63").attr("disabled", true);
+            $("#question_64").attr("disabled", true);
+            $("#question_65").attr("disabled", true);
+            $("#question_76").attr("disabled", true);
+            $("#question_77").attr("disabled", true);
+        } else {
+            $("#question_89").attr("disabled", false);
+            $("#question_90").attr("disabled", false);
+            $("#question_63").attr("disabled", false);
+            $("#question_64").attr("disabled", false);
+            $("#question_65").attr("disabled", false);
+            $("#question_76").attr("disabled", false);
+            $("#question_77").attr("disabled", false);
+        }
+        if (activeIndex == 19) {
+            var inputs = $(html).find("input:radio[type=radio]:checked");
+            var val = inputs.val();
+            var question90_disabled = $("#question_90").is(":disabled");
+            if (question90_disabled) {
+                mySwiper.slideTo(20, 1000);
+            } else if (val == 0) {
+                commonPostFn.questionRadio(val, html);
+                commonFun.jumpToSwiper(19, 22);
+            } else {
+                if (val == null || val == "") {
+                    layer.open({content: "该题目必须回答", skin: "msg", time: 2});
+                    return;
+                }
+                commonPostFn.questionRadio(val, html);
+                mySwiper.slideTo(20, 1000);
+            }
+        }
+        //第二十三题 最近一年与小姐发生性行为安全套使用频率
+        if (activeIndex == 20) {
+            var inputs = $(html).find("input:radio[type=radio]:checked");
+            var val = inputs.val();
+            var question65_disabled = $("#question_65").is(":disabled");
+            if (question65_disabled) {
+                mySwiper.slideTo(21, 1000);
+            } else if (val == null || val == "") {
+                layer.open({content: "该题目必须回答", skin: "msg", time: 2});
+                return;
+            }
+            commonPostFn.questionRadio(val, html);
+            mySwiper.slideTo(21, 1000);
+        }
+
+        //第二十四题 最近一次与小姐发生性行为使用安全套
+        if (activeIndex == 21) {
+            var inputs = $(html).find("input:radio[type=radio]:checked");
+            var val = inputs.val();
+            var question77_disabled = $("#question_77").is(":disabled");
+            if (question77_disabled) {
+                mySwiper.slideTo(22, 1000);
+            } else if (val == null || val == "") {
+                layer.open({content: "该题目必须回答", skin: "msg", time: 2});
+                return;
+            } else {
+                commonPostFn.questionRadio(val, html);
+            }
+            mySwiper.slideTo(22, 1000);
+        }
+
+        //第二十五题 最近一年与临时性伴发生过性行为
+        if (activeIndex == 22) {
+            var inputs = $(html).find("input:radio[type=radio]:checked");
+            var val = inputs.val();
+            if (val == 0) {
+                if (gender == 2) {
+                    commonFun.jumpToSwiper(22, 29);
+                } else {
+                    commonFun.jumpToSwiper(22, 25);
+                }
+            } else {
+                if (val == null || val == "") {
+                    layer.open({content: "该题目必须回答", skin: "msg", time: 2});
+                    return;
+                }
+                commonPostFn.questionRadio(val, html);
+                mySwiper.slideTo(23, 1000);
+            }
+        }
+
+        //第二十六题 最近一年与临时性伴发生性行为安全套使用频率
+        if (activeIndex == 23) {
+            var inputs = $(html).find("input:radio[type=radio]:checked");
+            var val = inputs.val();
+            question26Val = val;
+            if (val == null || val == "") {
+                layer.open({content: "该题目必须回答", skin: "msg", time: 2});
+                return;
+            }
+            commonPostFn.questionRadio(val, html);
+            mySwiper.slideTo(24, 1000);
+        }
+
+        //第二十七题 最近一次与临时性伴发生性行为使用安全套
+        if (activeIndex == 24) {
+            var inputs = $(html).find("input:radio[type=radio]:checked");
+            var val = inputs.val();
+            if ((question26Val == 1 && val == 1) || (question26Val == 3 && val == 0)) {
+                layer.open({content: "使用安全套行为前后矛盾，请核查！", skin: "msg", time: 2});
+                return;
+            } else {
+                if (val == null || val == "") {
+                    layer.open({content: "该题目必须回答", skin: "msg", time: 2});
+                    return;
+                } else if (gender == 2 && val) {
+                    commonPostFn.questionRadio(val, html);
+                    commonFun.jumpToSwiper(24, 29);
+                } else {
+                    mySwiper.slideTo(25, 1000);
+                }
+            }
+        }
+
+        //第二十八题 最近一年是否有同性性行为
+        if (gender != 1) {
+            $("#question_85").attr("disabled", true);
+            $("#question_86").attr("disabled", true);
+        } else {
+            $("#question_85").attr("disabled", false);
+            $("#question_86").attr("disabled", false);
+        }
+        if (activeIndex == 25) {
+            var inputs = $(html).find("input:radio[type=radio]:checked");
+            var val = inputs.val();
+            var question85_disabled = $("#question_85").is(":disabled");
+            if (question85_disabled) {
+                mySwiper.slideTo(26, 1000);
+            }
+            if (val == 0) {
+                commonPostFn.questionRadio(val, html);
+                commonFun.jumpToSwiper(25, 29);
+            } else {
+                if (val == null || val == "") {
+                    layer.open({content: "该题目必须回答", skin: "msg", time: 2});
+                    return;
+                }
+                commonPostFn.questionRadio(val, html);
+                mySwiper.slideTo(26, 1000);
+            }
+        }
+
+        //第二十九题 最近一年是否有同性商业性行为
+        if (activeIndex == 26) {
+            var inputs = $(html).find("input:radio[type=radio]:checked");
+            var val = inputs.val();
+            if (val == null || val == "") {
+                layer.open({content: "该题目必须回答", skin: "msg", time: 2});
+                return;
+            }
+            commonPostFn.questionRadio(val, html);
+            mySwiper.slideTo(27, 1000);
+        }
+
+        //第三十题 最近一年同性肛交安全套使用频率
+        if (activeIndex == 27) {
+            var inputs = $(html).find("input:radio[type=radio]:checked");
+            var val = inputs.val();
+            question28Val = val;
+            if (val == null || val == "") {
+                layer.open({content: "该题目必须回答", skin: "msg", time: 2});
+                return;
+            }
+            commonPostFn.questionRadio(val, html);
+            mySwiper.slideTo(28, 1000);
+        }
+
+        //第三十一题 最近一次同性肛交使用安全套
+        if (activeIndex == 28) {
+            var inputs = $(html).find("input:radio[type=radio]:checked");
+            var val = inputs.val();
+            if (
+                (question28Val == 1 && val == 1) ||
+                (question28Val == 3 && val == 0)
+            ) {
+                layer.open({content: "使用安全套行为前后矛盾，请核查！", skin: "msg", time: 2});
+                return;
+            } else {
+                if (val == null || val == "") {
+                    layer.open({content: "该题目必须回答", skin: "msg", time: 2});
+                    return;
+                }
+                commonPostFn.questionRadio(val, html);
+                mySwiper.slideTo(29, 1000);
+            }
+        }
+
+        //第三十二题 是否吸毒
+        if (activeIndex == 29) {
+            var inputs = $(html).find("input:radio[type=radio]:checked");
+            var val = inputs.val();
+            if (val == 0) {
+                commonPostFn.questionRadio(val, html);
+                commonFun.jumpToSwiper(29, 33);
+            } else {
+                if (val == null || val == "") {
+                    layer.open({content: "该题目必须回答", skin: "msg", time: 2});
+                    return;
+                }
+                commonPostFn.questionRadio(val, html);
+                mySwiper.slideTo(30, 1000);
+            }
+        }
+
+        //第三十三题 注射过毒品
+        if (activeIndex == 30) {
+            var inputs = $(html).find("input:radio[type=radio]:checked");
+            var val = inputs.val();
+            if (val == 0) {
+                commonPostFn.questionRadio(val, html);
+                commonFun.jumpToSwiper(30, 33);
+            } else {
+                if (val == null || val == "") {
+                    layer.open({content: "该题目必须回答", skin: "msg", time: 2});
+                    return;
+                }
+                commonPostFn.questionRadio(val, html);
+                mySwiper.slideTo(31, 1000);
+            }
+        }
+
+        //第三十四题 共用过针具
+        if (activeIndex == 31) {
+            var inputs = $(html).find("input:radio[type=radio]:checked");
+            var val = inputs.val();
+            if (val == 0) {
+                commonPostFn.questionRadio(val, html);
+                commonFun.jumpToSwiper(31, 33);
+            } else {
+                if (val == null || val == "") {
+                    layer.open({content: "该题目必须回答", skin: "msg", time: 2});
+                    return;
+                }
+                commonPostFn.questionRadio(val, html);
+                mySwiper.slideTo(32, 1000);
+            }
+        }
+
+        //第三十五题 最近六个月共用针具的频率
+        if (activeIndex == 32) {
+            var inputs = $(html).find("input:radio[type=radio]:checked");
+            var val = inputs.val();
+            if (val == null || val == "") {
+                layer.open({content: "该题目必须回答", skin: "msg", time: 2});
+                return;
+            }
+            commonPostFn.questionRadio(val, html);
+            mySwiper.slideTo(33, 1000);
+        }
+
+        //第三十六题 采血
+        if (activeIndex == 33) {
+            var inputs = $(html).find("input:radio[type=radio]:checked");
+            var val = inputs.val();
+            if (val == null || val == "") {
+                layer.open({content: "该题目必须回答", skin: "msg", time: 2});
+                return;
+            }
+            commonPostFn.questionRadio(val, html);
+            $.ajax({
+                type: "POST",
+                url: ctx + "/api/front/updateStatus"
+            });
+            $("#t2").hide();
+            $("#t3").show();
+        }
+    }
+});
+
+$("input[type=radio][name=questionOptionName_130]").change(function () {
+    question19 = this.value;
+});
+
+$("input[type=radio][name=questionOptionName_133]").change(function () {
+    question22 = this.value;
+});
+
+$("input[type=radio][name=questionOptionName_135]").change(function () {
+    question24 = this.value;
+});
+
+$("input[type=radio][name=questionOptionName_1126]").change(function () {
+    question27 = this.value;
+});
+
+$("input[type=radio][name=questionOptionName_1130]").change(function () {
+    question31 = this.value;
+});
+
+$("input[type=radio][name=questionOptionName_136]").change(function () {
+    question32 = this.value;
+});
+
+$("input[type=radio][name=questionOptionName_1132]").change(function () {
+    question33 = this.value;
+});
+
+//上一步
+$(".swiper-button-prev").click(function () {
+    var activeIndex = mySwiper.activeIndex;
+    if (activeIndex != 0) {
+        var returnTo = $("#swiper_" + activeIndex).attr("data-jump-from");
+        if (commonFun.isEmpty(returnTo)) {
+            mySwiper.slideTo(activeIndex - 1, 1000);
+        } else {
+            mySwiper.slideTo(returnTo, 1000);
+            $("#swiper_" + activeIndex).removeAttr("data-jump-from");
+        }
+    }
+    if (question19 == 0 && activeIndex == 29) {
+        $("#question_66").attr("disabled", false);
+        $("#question_67").attr("disabled", false);
+        $("#question_68").attr("disabled", false);
+    } else if (question22 == 0 && activeIndex == 22) {
+        $("#question_89").attr("disabled", false);
+        $("#question_90").attr("disabled", false);
+    } else if (question27 == 0 && activeIndex == 29) {
+        $("#question_85").attr("disabled", false);
+        $("#question_86").attr("disabled", false);
+    }
+});
+
+//民族
+var nationsOption = "<option value=''>请选择民族</option>";
+for (var i = 0; i < nations.length; i++) {
+    nationsOption += '<option value="' + nations[i] + '">' + nations[i] + "</option>";
+}
+$(nationsOption).appendTo(".nation");
+
+//国籍
+var countrysOption = "<option value=''>请选择国籍</option>";
+for (var i = 0; i < countrys.length; i++) {
+    var selected = "";
+    if ("中国" == countrys[i]) {
+        selected = "selected='true'";
+    }
+    countrysOption += '<option value="' + countrys[i] + '" ' + selected + " >" + countrys[i] + "</option>";
+}
+$(countrysOption).appendTo(".countrys");
+
+$(function () {
+    $("#distpicker").distpicker();
+});
+
+function postData(questionNum, questionName, answerValue, optionName, optionValue, type) {
+    $.ajax({
+        type: "POST",
+        url: ctx + "/api/front/answerQuestion",
+        data: {
+            questionNum: questionNum,
+            questionName: questionName,
+            answerValue: answerValue,
+            optionName: optionName,
+            optionValue: optionValue,
+            type: type
+        }
+    });
+}

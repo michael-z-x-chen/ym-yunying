@@ -1,0 +1,15 @@
+com\hmn\ym\common\enums\ServerCode.class
+com\hmn\ym\common\utils\Assert.class
+com\hmn\ym\common\model\BaseQueryReq.class
+com\hmn\ym\common\annotation\NeedSecurity.class
+com\hmn\ym\common\model\Model.class
+com\hmn\ym\common\model\BaseReq.class
+com\hmn\ym\common\utils\Encodes.class
+com\hmn\ym\common\utils\RespUtils.class
+com\hmn\ym\common\exception\BizException.class
+com\hmn\ym\common\model\BaseResp.class
+com\hmn\ym\common\generator\model\IngoreSetterAndGetterPlugin.class
+com\hmn\ym\common\model\BaseModel.class
+com\hmn\ym\common\generator\mapper\TkMyBatis3Impl.class
+com\hmn\ym\common\model\BaseQueryResp.class
+com\hmn\ym\common\generator\mapper\TkMyBatis3SimpleImpl.class

@@ -1,0 +1,82 @@
+var table;
+$(document).ready(function () {
+    table = $('#dataTables').DataTable({
+        "responsive": true,
+        "paginate": true,
+        "processing": true,
+        "serverSide": true,
+        "searching": false,
+        "ordering": false,
+        "pagingType": 'full_numbers',
+        "ajax": {
+            "url": ctx + '/api/answer/listAnswerNum',
+            "type": 'post',
+            "data": function (data) {
+                var answerNum = $("#eq_answerNum").val();
+
+                data.answerNum = answerNum;
+            }
+        },
+        "columnDefs": [{
+            "targets": [1],
+            "data": "download_link",
+            "render": function (data) {
+                var checkNum = '';
+                if (data.checkNum != null) {
+                    checkNum = data.checkNum;
+                }
+                var html = '<input type="text" onkeyup="value=value.replace(/[^\\w\\/]/ig,\'\')" onblur="updateExaminationNum(this)" data-id="' + data.id + '" value="' + checkNum + '"/>';
+
+                return html;
+            }
+        }],
+        "columns": [
+            {"data": "answerNum"},
+            {"data": null}
+        ],
+        "language": {
+            "url": ctx + '/static/plugins/datatables/language-chinese.json'
+        }
+    });
+});
+
+function search() {
+    table.ajax.reload();
+}
+
+function updateExaminationNum(obj) {
+    var id = $(obj).attr("data-id");
+    var value = $(obj).val();
+    if (value == '' || value == null) {
+        return;
+    }
+    $.ajax({
+        type: 'POST',
+        url: ctx + "/api/answer/updateExaminationNum",
+        data: {
+            id: id,
+            checkNum: value
+        },
+        success: function (result) {
+            if (result.code == "200") {
+                swal({
+                    title: "",
+                    text: "绑定成功!",
+                    type: "success",
+                    closeOnConfirm: true
+                }, function () {
+                    table.ajax.reload();
+                });
+            } else {
+                swal({title: "", text: result.msg, type: "error", closeOnConfirm: true});
+            }
+        }
+    })
+}
+
+
+
+
+
+
+

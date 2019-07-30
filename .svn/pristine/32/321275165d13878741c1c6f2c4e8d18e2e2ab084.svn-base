@@ -1,0 +1,54 @@
+package com.hmn.ym.dao.entities.po.answer;
+
+import java.io.Serializable;
+import java.util.Date;
+import javax.persistence.*;
+
+import lombok.Data;
+
+@Table(name = "t_answer_question")
+@Data
+public class AnswerQuestion implements Serializable {
+    /**
+     * 主键id
+     */
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer id;
+
+    /**
+     * 答题记录Id
+     */
+    @Column(name = "answer_id")
+    private String answerId;
+
+    /**
+     * 题目Id
+     */
+    @Column(name = "question_id")
+    private Integer questionId;
+
+    /**
+     * 题目名称
+     */
+    @Column(name = "question_name")
+    private String questionName;
+
+    /**
+     * 填空题的回答内容
+     */
+    private String content;
+
+    /**
+     * 创建时间
+     */
+    @Column(name = "create_time")
+    private Date createTime;
+
+    /**
+     * 更新时间
+     */
+    @Column(name = "update_time")
+    private Date updateTime;
+
+    private static final long serialVersionUID = 1L;
+}

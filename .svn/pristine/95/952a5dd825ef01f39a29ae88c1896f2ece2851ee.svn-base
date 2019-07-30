@@ -1,0 +1,27 @@
+package com.hmn.ym.manager.common;
+
+import lombok.Data;
+
+import java.util.List;
+
+@Data
+public class TablePage<T> {
+    /**
+     * 响应编码
+     */
+    private int code;
+    /**
+     * 响应提示
+     */
+    private String msg;
+    /**
+     * 总记录数据
+     */
+    private Integer count;
+    /**
+     * 数据列表
+     */
+    private List<T> data;
+}
+
+

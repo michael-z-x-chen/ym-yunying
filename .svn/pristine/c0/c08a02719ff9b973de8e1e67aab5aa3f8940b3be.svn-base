@@ -1,0 +1,40 @@
+package com.hmn.ym.dao.entities.po.system;
+
+import java.io.Serializable;
+import java.util.Date;
+import javax.persistence.*;
+
+import lombok.Data;
+@Table(name = "t_sys_role_permission")
+@Data
+public class RolePermission implements Serializable {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer id;
+
+    /**
+     * 角色id
+     */
+    @Column(name = "role_id")
+    private Integer roleId;
+
+    /**
+     * 权限ID
+     */
+    @Column(name = "permission_id")
+    private Integer permissionId;
+
+    /**
+     * 创建人员
+     */
+    @Column(name = "create_id")
+    private Integer createId;
+
+    /**
+     * 创建时间
+     */
+    @Column(name = "create_time")
+    private Date createTime;
+
+    private static final long serialVersionUID = 1L;
+}

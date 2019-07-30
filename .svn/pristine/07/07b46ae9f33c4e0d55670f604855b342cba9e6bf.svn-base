@@ -1,0 +1,41 @@
+package com.hmn.ym.manager.web.view;
+
+import com.hmn.ym.dao.entities.vo.BaseVo;
+import com.hmn.ym.manager.utils.DateUtil;
+import com.hmn.ym.manager.utils.DwzResult;
+import com.hmn.ym.manager.utils.JsonUtil;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+/**
+ * 首页管理
+ */
+@Controller
+public class IndexController {
+
+    @GetMapping("/")
+    public String index(HttpServletRequest req) {
+        req.setAttribute("nowDate", DateUtil.getNowDate());
+
+        return "index";
+    }
+
+    @GetMapping("/welcome")
+    public String welcome() {
+        return "welcome";
+    }
+
+    @RequestMapping("subMenu")
+    public String subMenu(BaseVo param, HttpServletRequest req, HttpServletResponse resp) {
+        return "subMenu";
+    }
+
+    @RequestMapping("updateCache")
+    public void updateCache(BaseVo param, HttpServletRequest req, HttpServletResponse resp) {
+        JsonUtil.renderDwzResult(resp, true, "更新缓存成功", DwzResult.CALLBACK_CLOSECURRENT);
+    }
+}

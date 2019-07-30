@@ -1,0 +1,59 @@
+package com.hmn.ym.manager.service.system;
+
+
+import com.hmn.ym.dao.entities.po.system.Role;
+import com.hmn.ym.dao.entities.po.system.RoleMenu;
+import com.hmn.ym.dao.entities.vo.BaseQueryVo;
+import com.hmn.ym.dao.entities.vo.DataTablePage;
+import com.hmn.ym.dao.entities.vo.system.RoleMenuVo;
+import com.hmn.ym.dao.entities.vo.system.RoleVo;
+
+import java.util.List;
+
+public interface IRoleService {
+
+    /**
+     * 获取角色分页
+     *
+     * @param vo
+     * @return
+     */
+    DataTablePage<Role> page(BaseQueryVo vo);
+
+    /**
+     * 获取角色
+     *
+     * @return
+     */
+    List<Role> list();
+
+    /**
+     * 保存角色
+     *
+     * @param vo
+     */
+    void save(RoleVo vo);
+
+
+    /**
+     * 删除角色
+     *
+     * @param id
+     */
+    void delete(Integer id);
+
+
+    /**
+     * 保存角色菜单
+     *
+     * @param vo
+     */
+    void saveRoleMenu(RoleMenuVo vo);
+
+    /**
+     * 获取角色菜单
+     *
+     * @param roleId
+     */
+    List<RoleMenu> listRoleMenuByRoleId(Integer roleId);
+}

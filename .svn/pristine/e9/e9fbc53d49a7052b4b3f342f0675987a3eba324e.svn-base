@@ -1,0 +1,16 @@
+package com.hmn.ym.manager.common.config;
+
+import org.sitemesh.builder.SiteMeshFilterBuilder;
+import org.sitemesh.config.ConfigurableSiteMeshFilter;
+import org.springframework.context.annotation.Configuration;
+
+@Configuration
+public class WebSiteMeshFilter extends ConfigurableSiteMeshFilter {
+
+    @Override
+    protected void applyCustomConfiguration(SiteMeshFilterBuilder builder) {
+       // builder.addDecoratorPath("/*", "/WEB-INF/views/layouts/default.jsp").addExcludedPath("/login");
+//        也可使用Controller请求映射
+//        builder.addDecoratorPath("/task/index", "/task/decorator").addExcludedPath("/task/decorator");
+    }
+}

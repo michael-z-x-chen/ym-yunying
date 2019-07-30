@@ -1,0 +1,29 @@
+package com.hmn.ym.dao.entities.vo.system;
+
+import com.hmn.ym.dao.entities.vo.BaseQueryVo;
+import lombok.Data;
+
+@Data
+public class PermissionVo extends BaseQueryVo {
+    private static final long serialVersionUID = 1L;
+    /**
+     * 主键ID
+     */
+    private Integer id;
+    /**
+     * 按钮名称
+     */
+    private String name;
+    /**
+     * 按钮编码
+     */
+    private String code;
+    /**
+     * 按钮url
+     */
+    private String url;
+    /**
+     * 菜单ID
+     */
+    private Integer menuId;
+}
